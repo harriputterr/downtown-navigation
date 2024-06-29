@@ -3,7 +3,7 @@ import { BuildingLayer } from "@/types/layer";
 import { ModelTransform } from "@/types/models";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 import mapboxgl from "mapbox-gl";
 
@@ -33,7 +33,6 @@ function createLayerGLTF(
   modelOrigin: { lng: number; lat: number },
   modelAltitude: number
 ): BuildingLayer {
-
   const modelRotate = [Math.PI / 2, 0, 0];
 
   const modelTransform = createModelTransform(
@@ -50,6 +49,7 @@ function createLayerGLTF(
       this.camera = new THREE.Camera();
       this.scene = new THREE.Scene();
 
+      
       // create two three.js lights to illuminate the model
       const directionalLight = new THREE.DirectionalLight(0xffffff);
       directionalLight.position.set(0, -70, 100).normalize();
@@ -58,6 +58,20 @@ function createLayerGLTF(
       const directionalLight2 = new THREE.DirectionalLight(0xffffff);
       directionalLight2.position.set(0, 70, 100).normalize();
       this.scene.add(directionalLight2);
+
+      const directionalLightHelper1 = new THREE.DirectionalLightHelper(
+        directionalLight
+      );
+      directionalLightHelper1.visible = true;
+      this.scene.add(directionalLightHelper1);
+
+      const directionalLightHelper2 = new THREE.DirectionalLightHelper(
+        directionalLight2
+      );
+      directionalLightHelper2.visible = true;
+      this.scene.add(directionalLightHelper2);
+
+      console.log(directionalLightHelper1)
 
       // use the three.js GLTF loader to add the 3D model to the three.js scene
       const loader = new GLTFLoader();
@@ -121,15 +135,14 @@ function createLayerGLTF(
 export function createModel(
   modelType: string, // floorplan, building
   modelURL: string,
-  modelOrigin: {lng: number, lat: number},
-  modelAltitude: number,
-): BuildingLayer{
-    if (modelType === 'building'){
-        return createLayerGLTF(modelURL, modelOrigin, modelAltitude)
-    }
-    else{
-        return createLayerGLTF(modelURL, modelOrigin, modelAltitude)
-    }
+  modelOrigin: { lng: number; lat: number },
+  modelAltitude: number
+): BuildingLayer {
+  if (modelType === "building") {
+    return createLayerGLTF(modelURL, modelOrigin, modelAltitude);
+  } else {
+    return createLayerGLTF(modelURL, modelOrigin, modelAltitude);
+  }
 }
 
 export function createLayerOBJ(
