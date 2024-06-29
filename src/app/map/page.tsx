@@ -12,7 +12,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaGFycmlwdXR0ZXJyIiwiYSI6ImNscmw4ZXRvNzBqdzYya
 export default function Map() {
 
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
-    const buildingPlanUrl = 'https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf';
+    const secUrl = 'https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf';
     const floorPlanUrl = "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec-m.gltf";
 
     useEffect(() => {
@@ -26,21 +26,19 @@ export default function Map() {
                 zoom: 16, // starting zoom,
                 antialias: true
             });
-
             const modelOrigin = { lng: -114.065369360293, lat: 51.04751758577689 };
-
-            const floorLayer = createModel('floor', floorPlanUrl, modelOrigin, 0);
-
+            const floorLayer = createModel('floor', floorPlanUrl, modelOrigin, 4.5);
+            const buildingLayer = createModel('building', secUrl, modelOrigin, 0);
             allLayers.push(floorLayer);
-
+            allLayers.push(buildingLayer);
 
             map.on('style.load', () => {
-
                 allLayers.map((layer) => {
                     map.addLayer(layer, 'waterway-label');
                 })
-
             });
+
+            
 
             // Cleanup function to remove the map instance when the component unmounts
             return () => {

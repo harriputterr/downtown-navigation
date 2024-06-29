@@ -3,6 +3,7 @@ import { BuildingLayer } from "@/types/layer";
 import { ModelTransform } from "@/types/models";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { v4 as uuidv4 } from 'uuid';
 
 import mapboxgl from "mapbox-gl";
 
@@ -42,7 +43,7 @@ function createLayerGLTF(
   );
 
   return {
-    id: "3d-model",
+    id: uuidv4(),
     type: "custom",
     renderingMode: "3d",
     onAdd: function (map, gl) {
