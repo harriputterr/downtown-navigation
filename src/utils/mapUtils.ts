@@ -48,7 +48,7 @@ function createLayerGLTF(
     renderingMode: "3d",
     onAdd: function (map, gl) {
       const pickables: THREE.Mesh[] = [];
-
+      console.log(map)
       const fov = 75; // Field of view
       const aspect = window.innerWidth / window.innerHeight; // Aspect ratio
       const near = 0.1; // Near clipping plane

@@ -40,7 +40,6 @@ export default function Map() {
             });
 
             
-
             // Cleanup function to remove the map instance when the component unmounts
             return () => {
                 map.remove()

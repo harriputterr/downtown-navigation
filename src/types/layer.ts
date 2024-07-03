@@ -8,3 +8,17 @@ export interface BuildingLayer extends mapboxgl.CustomLayerInterface {
     renderer?: THREE.WebGLRenderer;
     map?: mapboxgl.Map;
 }
+
+// Understaning raytracing here
+
+export interface CustomLayer extends mapboxgl.CustomLayerInterface {
+    camera?: THREE.PerspectiveCamera;
+    scene?: THREE.Scene;
+    renderer?: THREE.WebGLRenderer;
+    map?: mapboxgl.Map;
+    cameraTransform?: THREE.Matrix4;
+    makeScene: () => THREE.Scene;
+    raycaster?: THREE.Raycaster
+    raycast: (point: any, isClick: boolean) => void
+    addCubeAtIntersection: (point: any) => void;
+}
