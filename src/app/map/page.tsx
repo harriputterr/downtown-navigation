@@ -27,9 +27,10 @@ export default function Map() {
                 antialias: true
             });
             const modelOrigin = { lng: -114.065369360293, lat: 51.04751758577689 };
-            const floorLayer = createModel('floor', floorPlanUrl, modelOrigin, 4.5);
+            
+            // const floorLayer = createModel('floor', floorPlanUrl, modelOrigin, 4.5);
             const buildingLayer = createModel('building', secUrl, modelOrigin, 0);
-            allLayers.push(floorLayer);
+            // allLayers.push(floorLayer);
             allLayers.push(buildingLayer);
 
             map.on('style.load', () => {
