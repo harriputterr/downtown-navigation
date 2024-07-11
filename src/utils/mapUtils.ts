@@ -47,12 +47,28 @@ function createLayerGLTF(
     type: "custom",
     renderingMode: "3d",
     onAdd: function (map, gl) {
+
+      // making the appropriate scale for camera
+      const centerLngLat = map.getCenter();
+      const center = mapboxgl.MercatorCoordinate.fromLngLat(centerLngLat, 0);
+      const { x, y, z } = center;
+      const s = center.meterInMercatorCoordinateUnits();
+
+      const scale = new THREE.Matrix4().makeScale(s, s, -s);
+      const rotation = new THREE.Matrix4().multiplyMatrices(
+        new THREE.Matrix4().makeRotationX(-0.5 * Math.PI),
+        new THREE.Matrix4().makeRotationY(Math.PI)
+      );
+      this.cameraTransform = new THREE.Matrix4()
+        .multiplyMatrices(scale, rotation)
+        .setPosition(x, y, z!);
+
       const pickables: THREE.Mesh[] = [];
-      console.log(map)
+
       const fov = 75; // Field of view
       const aspect = window.innerWidth / window.innerHeight; // Aspect ratio
       const near = 0.1; // Near clipping plane
-      const far = 1000; // Far clipping plane
+      const far = 1e6; // Far clipping plane
 
       this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
       this.scene = new THREE.Scene();
@@ -70,6 +86,7 @@ function createLayerGLTF(
       const directionalLightHelper1 = new THREE.DirectionalLightHelper(
         directionalLight1
       );
+
       const directionalLightHelper2 = new THREE.DirectionalLightHelper(
         directionalLight2
       );
@@ -130,7 +147,12 @@ function createLayerGLTF(
           // console.log("Mouse: ", mouse)
           // console.log("Raycaster: ", raycaster)
           // console.log("Camera: ", this.camera)
+          this.cameraHelper = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10),new THREE.MeshPhongMaterial({ color: 0x000000 }));
+          this.cameraHelper.position.set( 10,  10, 10)
 
+          this.scene!.add(this.cameraHelper)
+          console.log("camera position:" , this.camera.position)
+          console.log("cameraHelper position:" , this.cameraHelper.position)
           if (intersects.length) {
             const n = new THREE.Vector3();
             n.copy((intersects[0].face as THREE.Face).normal);
@@ -138,6 +160,12 @@ function createLayerGLTF(
 
             arrowHelper.setDirection(n);
             arrowHelper.position.copy(intersects[0].point);
+
+            const cube = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10),new THREE.MeshPhongMaterial({ color: 0x00ff00 }));
+            cube.position.copy(intersects[0].point);
+            
+            this.scene!.add(cube);
+            pickables.push(cube)
           }
         }
       });
@@ -188,8 +216,6 @@ function createLayerGLTF(
         const z = position.z !== undefined ? position.z : 0;
         this.camera.position.set(position.x, position.y, z);
       }
-      // console.log(this.camera.position)
-
 
       this.camera.projectionMatrix = m.multiply(l);
       this.renderer.resetState();

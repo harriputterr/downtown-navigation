@@ -7,6 +7,8 @@ export interface BuildingLayer extends mapboxgl.CustomLayerInterface {
     scene?: THREE.Scene;
     renderer?: THREE.WebGLRenderer;
     map?: mapboxgl.Map;
+    cameraHelper?: THREE.Mesh
+    cameraTransform?: THREE.Matrix4;
 }
 
 // Understaning raytracing here
