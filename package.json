@@ -16,13 +16,14 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.378.0",
-    "mapbox-gl": "^3.4.0",
+    "mapbox-gl": "^2.2.0",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.164.1",
+    "threebox-plugin": "^2.2.7",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

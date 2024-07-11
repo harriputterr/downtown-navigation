@@ -21,7 +21,7 @@ export default function Map() {
 
             const map = new mapboxgl.Map({
                 container: mapContainerRef.current,
-                style: 'mapbox://styles/harriputterr/cls68v8br00fg01r68c319tfy',
+                style: 'mapbox://styles/mapbox/light-v9',
                 center: [-114.0637750, 51.0475053], // Calgary downtown[lng, lat]
                 zoom: 16, // starting zoom,
                 antialias: true
@@ -40,7 +40,6 @@ export default function Map() {
             });
 
             
-
             // Cleanup function to remove the map instance when the component unmounts
             return () => {
                 map.remove()
