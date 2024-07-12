@@ -3,23 +3,16 @@ import Threebox from "threebox-plugin/src/Threebox";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef, useState } from "react";
 import Stats from "three/examples/jsm/libs/stats.module.js";
+import * as THREE from "three";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGFycmlwdXR0ZXJyIiwiYSI6ImNscmw4ZXRvNzBqdzYya3BrcTdhaDlkZGUifQ.croMPXknb0ZuTliWP9BGyw";
 
 export default function model() {
-  const mapRef = useRef(null)
-  const [time, setTime] = useState(
-    new Date().getHours() * 3600 +
-      new Date().getMinutes() * 60 +
-      new Date().getSeconds()
-  );
-  const [date, setDate] = useState(new Date());
+  const mapRef = useRef(null);
 
   useEffect(() => {
-
-    if (mapRef.current){
-      
+    if (mapRef.current) {
       const map = new mapboxgl.Map({
         container: mapRef.current,
         style: "mapbox://styles/mapbox/light-v9",
@@ -39,16 +32,8 @@ export default function model() {
 
       window.tb = tb;
 
-
       const modelOrigin = [-114.06403763213298, 51.04794111891039];
 
-      const updateDateAndTime = (timeValue) => {
-        const newDate = new Date();
-        newDate.setHours(Math.floor(timeValue / 60 / 60));
-        newDate.setMinutes(Math.floor(timeValue / 60) % 60);
-        newDate.setSeconds(timeValue % 60);
-        setDate(newDate);
-      };
 
       const createCustomLayer = (layerName, origin) => {
         return {
@@ -56,7 +41,6 @@ export default function model() {
           type: "custom",
           renderingMode: "3d",
           onAdd: function (map, gl) {
-
             const options = {
               type: "gltf",
               obj: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf",
@@ -64,6 +48,7 @@ export default function model() {
               scale: 1,
               rotation: { x: 90, y: 180, z: 0 },
               anchor: "center",
+              bbox: false,
             };
 
             tb.loadObj(options, function (model) {
@@ -72,14 +57,39 @@ export default function model() {
                 "Suncor Energy Center Building in Calgary Downtown"
               );
               tb.add(model);
+              pickables.push(model);
             });
           },
           render: function (gl, matrix) {
-           
             tb.update();
           },
         };
       };
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.15); // Soft white light
+      tb.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+      directionalLight.position.set(100, 100, 100).normalize();
+      tb.add(directionalLight);
+
+
+      const pickables = []; // Array to store pickable objects
+
+      const addSphere = (coords) => {
+        console.log("Yes running", coords);
+        const sphere = tb
+          .sphere({
+            radius: 10, // adjust radius as needed
+            units: "meters",
+            color: "red",
+            material: "MeshToonMaterial",
+          })
+          .setCoords(coords);
+
+        tb.add(sphere);
+      };
+
       let stats = new Stats();
 
       const animate = () => {
@@ -91,37 +101,46 @@ export default function model() {
         map.getContainer().appendChild(stats.dom);
         animate();
         map.addLayer(createCustomLayer("3d-model", modelOrigin));
-      });
+        map.on("click", (event) => {
+          console.log(event);
 
-      const timeInput = document.getElementById("time");
-      if (timeInput) {
-        timeInput.value = time;
-        timeInput.oninput = (event) => {
-          const newTime = +event.target.value;
-          setTime(newTime);
-          updateDateAndTime(newTime);
-          map.triggerRepaint();
-        };
-      }
+          let intersects = tb.queryRenderedFeatures(event.point);
+          console.log("Intersects:", intersects);
+          let intersectPointArray;
+
+          if(intersects.length == 0){
+            console.log("Does thsi tun")
+             intersectPointArray = [
+              event.lngLat.lng,
+              event.lngLat.lat
+            ];
+          }
+          else{
+            intersectPointArray = [
+              event.lngLat.lng,
+              event.lngLat.lat,
+              intersects[0].point.z,
+            ];
+          }
+
+          // const sceneCoords = event.point; // Scene coordinates
+          console.log(event.lngLat)
+          // const worldCoords = tb.projectToWorld(event.lngLat); // Convert to world coordinates
+          // console.log("Scene Coordinates:", sceneCoords);
+          // console.log("World Coordinates:", worldCoords);
+          addSphere(intersectPointArray);
+        });
+      });
 
       return () => {
         map.remove();
       };
     }
-  }, [time, date]);
+  }, []);
 
   return (
     <>
       <div ref={mapRef} className="w-screen h-screen" />
-      <input
-        id="time"
-        type="range"
-        min="0"
-        max="86400"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-      />
-      <div id="hour"></div>
     </>
   );
 }
