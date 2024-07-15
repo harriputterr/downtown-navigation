@@ -2,8 +2,8 @@
 import Threebox from "threebox-plugin/src/Threebox";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef, useState } from "react";
-import Stats from 'three/addons/libs/stats.module.js'
-import { GUI } from 'dat.gui'
+import Stats from "three/addons/libs/stats.module.js";
+import { GUI } from "dat.gui";
 import * as THREE from "three";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGFycmlwdXR0ZXJyIiwiYSI6ImNscmw4ZXRvNzBqdzYya3BrcTdhaDlkZGUifQ.croMPXknb0ZuTliWP9BGyw";
@@ -43,7 +43,7 @@ export default function Raycasting() {
         enableTooltips: true, // change this to false to disable default tooltips on fill-extrusion and 3D models
       });
 
-      window.tb = tb; 
+      window.tb = tb;
 
       const redMaterial = new THREE.MeshPhongMaterial({
         color: 0x660000,
@@ -101,6 +101,15 @@ export default function Raycasting() {
               anchor: "center",
             };
 
+            let floor = {
+              obj: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf",
+              type: "gltf",
+              scale: 1,
+              units: "meters",
+              rotation: { x: 90, y: 0, z: 0 }, //default rotation
+              anchor: "center",
+            };
+
             // tb.loadObj(options, function (model) {
             //   model.setCoords(origin);
             //   model.addTooltip(
@@ -118,7 +127,7 @@ export default function Raycasting() {
             //   model.addTooltip("This is a custom tooltip", true);
 
             //   tb.add(building);
-              
+
             // });
           },
           render: function (gl, matrix) {

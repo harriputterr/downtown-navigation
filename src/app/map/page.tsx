@@ -2,7 +2,6 @@
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 import 'mapbox-gl/dist/mapbox-gl.css';
-import * as THREE from 'three';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { BuildingLayer } from "@/types/layer";
 import { createModel } from "@/utils/mapUtils"
@@ -28,9 +27,9 @@ export default function Map() {
             });
             const modelOrigin = { lng: -114.065369360293, lat: 51.04751758577689 };
             
-            // const floorLayer = createModel('floor', floorPlanUrl, modelOrigin, 4.5);
+            const floorLayer = createModel('floor', floorPlanUrl, modelOrigin, 4.5);
             const buildingLayer = createModel('building', secUrl, modelOrigin, 0);
-            // allLayers.push(floorLayer);
+            allLayers.push(floorLayer);
             allLayers.push(buildingLayer);
 
             map.on('style.load', () => {

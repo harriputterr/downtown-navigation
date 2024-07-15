@@ -7,6 +7,8 @@ import * as THREE from "three";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGFycmlwdXR0ZXJyIiwiYSI6ImNscmw4ZXRvNzBqdzYya3BrcTdhaDlkZGUifQ.croMPXknb0ZuTliWP9BGyw";
+  const floorPlanUrl =
+  "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec-m.gltf";
 
 export default function model() {
   const mapRef = useRef(null);
@@ -50,6 +52,7 @@ export default function model() {
               anchor: "center",
               bbox: false,
             };
+            
 
             tb.loadObj(options, function (model) {
               model.setCoords(origin);
@@ -77,16 +80,17 @@ export default function model() {
       const pickables = []; // Array to store pickable objects
 
       const addSphere = (coords) => {
-        console.log("Yes running", coords);
+
+        console.log("argument recevied to addSphere: ", coords);
         const sphere = tb
           .sphere({
-            radius: 10, // adjust radius as needed
+            radius: 1, 
             units: "meters",
             color: "red",
             material: "MeshToonMaterial",
+            anchor: "center"
           })
           .setCoords(coords);
-
         tb.add(sphere);
       };
 
@@ -112,7 +116,8 @@ export default function model() {
             console.log("Does thsi tun")
              intersectPointArray = [
               event.lngLat.lng,
-              event.lngLat.lat
+              event.lngLat.lat,
+              0
             ];
           }
           else{
@@ -123,11 +128,9 @@ export default function model() {
             ];
           }
 
-          // const sceneCoords = event.point; // Scene coordinates
+          
           console.log(event.lngLat)
-          // const worldCoords = tb.projectToWorld(event.lngLat); // Convert to world coordinates
-          // console.log("Scene Coordinates:", sceneCoords);
-          // console.log("World Coordinates:", worldCoords);
+
           addSphere(intersectPointArray);
         });
       });
