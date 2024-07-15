@@ -45,6 +45,7 @@ export default function model() {
           type: "custom",
           renderingMode: "3d",
           onAdd: function (map, gl) {
+
             const createModels = (modelData) => {
               const options = {
                 type: "gltf",
@@ -58,11 +59,16 @@ export default function model() {
                 bbox: false,
               };
 
-              console.log(options)
-
               tb.loadObj(options, function (model) {
                 model.setCoords(modelData.origin);
                 model.addTooltip(modelData.name);
+                model.traverse((child) => {
+                  if (child.isMesh && child.material){
+                    child.nameId = modelData.id
+                  }
+                })
+                model.nameId = modelData.id
+
                 tb.add(model);
                 pickables.push(model);
               });
@@ -158,7 +164,6 @@ export default function model() {
       const pickables = []; // Array to store pickable objects
 
       const addSphere = (coords) => {
-        console.log("argument recevied to addSphere: ", coords);
         const sphere = tb
           .sphere({
             radius: 1,
@@ -169,10 +174,7 @@ export default function model() {
           })
           .setCoords(coords);
 
-        console.log(sphere);
         tb.add(sphere);
-
-        console.log(tb.world.children);
       };
 
       let stats = new Stats();
@@ -187,14 +189,13 @@ export default function model() {
         animate();
         map.addLayer(createCustomLayer("3d-model", modelOrigin));
         map.on("click", (event) => {
-          console.log(event);
 
           let intersects = tb.queryRenderedFeatures(event.point);
+
           console.log("Intersects:", intersects);
           let intersectPointArray;
 
           if (intersects.length == 0) {
-            console.log("Does thsi tun");
             intersectPointArray = [event.lngLat.lng, event.lngLat.lat, 0];
           } else {
             intersectPointArray = [
@@ -203,8 +204,6 @@ export default function model() {
               intersects[0].point.z,
             ];
           }
-
-          console.log(event.lngLat);
 
           addSphere(intersectPointArray);
         });
@@ -215,6 +214,24 @@ export default function model() {
       };
     }
   }, []);
+
+  const handleHide = () => {
+    if (selectedModel) {
+      selectedModel.visible = false;
+    }
+  };
+
+  const handleOpacityChange = (event) => {
+    if (selectedModel) {
+      const newOpacity = parseFloat(event.target.value);
+      selectedModel.traverse((child) => {
+        if (child.isMesh) {
+          child.material.opacity = newOpacity;
+          child.material.transparent = true;
+        }
+      });
+    }
+  };
 
   return (
     <>
