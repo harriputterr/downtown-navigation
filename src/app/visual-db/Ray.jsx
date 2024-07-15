@@ -7,10 +7,12 @@ import * as THREE from "three";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGFycmlwdXR0ZXJyIiwiYSI6ImNscmw4ZXRvNzBqdzYya3BrcTdhaDlkZGUifQ.croMPXknb0ZuTliWP9BGyw";
-  const floorPlanUrl =
+const floorPlanUrl =
   "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec-m.gltf";
 
 export default function model() {
+  const [selectedModel, setSelectedModel] = useState(null);
+
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -36,14 +38,13 @@ export default function model() {
 
       const modelOrigin = [-114.06403763213298, 51.04794111891039];
 
-
       const createCustomLayer = (layerName, origin) => {
         return {
           id: layerName,
           type: "custom",
           renderingMode: "3d",
           onAdd: function (map, gl) {
-            const options = {
+            const secOptions = {
               type: "gltf",
               obj: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf",
               units: "meters",
@@ -52,16 +53,65 @@ export default function model() {
               anchor: "center",
               bbox: false,
             };
-            
 
-            tb.loadObj(options, function (model) {
+            const floorPlanOptions = {
+              type: "gltf",
+              obj: floorPlanUrl,
+              units: "meters",
+              scale: 1,
+              rotation: { x: 90, y: 180, z: 0 },
+              anchor: "center",
+              bbox: false,
+            };
+
+            tb.loadObj(secOptions, function (model) {
               model.setCoords(origin);
               model.addTooltip(
                 "Suncor Energy Center Building in Calgary Downtown"
               );
               tb.add(model);
+              model.traverse((child) => {
+                if (child.isMesh && child.material) {
+                  child.material.format = THREE.RGBAFormat;
+                  child.material.transparent = true;
+                  child.material.opacity = 1;
+                  child.material.wireframe = true;
+                  console.log(child)
+                }
+              });
               pickables.push(model);
             });
+
+            tb.loadObj(floorPlanOptions, function (model) {
+              const origin = [-114.06399405236901, 51.04800708837064, 4.9];
+              model.setCoords(origin);
+              tb.add(model);
+
+              model.traverse((child) => {
+                if (child.isMesh && child.material) {
+                  child.material.format = THREE.RGBAFormat;
+                  child.material.transparent = true;
+                  child.material.opacity = 0.1;
+                  console.log(child)
+                }
+              });
+              pickables.push(model);
+
+              highlightOrigin(origin);
+            });
+            const highlightOrigin = (origin) => {
+              const sphere = tb
+                .sphere({
+                  radius: 1, // adjust radius as needed
+                  units: "meters",
+                  color: "black",
+                  material: "MeshToonMaterial",
+                  anchor: "center",
+                })
+                .setCoords(origin);
+
+              tb.add(sphere);
+            };
           },
           render: function (gl, matrix) {
             tb.update();
@@ -76,22 +126,24 @@ export default function model() {
       directionalLight.position.set(100, 100, 100).normalize();
       tb.add(directionalLight);
 
-
       const pickables = []; // Array to store pickable objects
 
       const addSphere = (coords) => {
-
         console.log("argument recevied to addSphere: ", coords);
         const sphere = tb
           .sphere({
-            radius: 1, 
+            radius: 1,
             units: "meters",
-            color: "red",
+            color: "green",
             material: "MeshToonMaterial",
-            anchor: "center"
+            anchor: "center",
           })
           .setCoords(coords);
+
+          console.log(sphere)
         tb.add(sphere);
+
+        console.log(tb.world.children)
       };
 
       let stats = new Stats();
@@ -112,15 +164,10 @@ export default function model() {
           console.log("Intersects:", intersects);
           let intersectPointArray;
 
-          if(intersects.length == 0){
-            console.log("Does thsi tun")
-             intersectPointArray = [
-              event.lngLat.lng,
-              event.lngLat.lat,
-              0
-            ];
-          }
-          else{
+          if (intersects.length == 0) {
+            console.log("Does thsi tun");
+            intersectPointArray = [event.lngLat.lng, event.lngLat.lat, 0];
+          } else {
             intersectPointArray = [
               event.lngLat.lng,
               event.lngLat.lat,
@@ -128,8 +175,7 @@ export default function model() {
             ];
           }
 
-          
-          console.log(event.lngLat)
+          console.log(event.lngLat);
 
           addSphere(intersectPointArray);
         });

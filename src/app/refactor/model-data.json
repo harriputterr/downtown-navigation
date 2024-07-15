@@ -1,0 +1,21 @@
+[
+    {
+        "id": "sec",
+        "uuid": "",
+        "name": "Suncor Energy Center Building",
+        "structureType": "Building",
+        "origin": [-114.06403763213298, 51.04794111891039, 0],
+        "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf",
+        "rotation": null
+    },
+    {
+        "id": "sec-m",
+        "uuid": "",
+        "name": "Suncor Energy Center Main Floor",
+        "structureType": "Floor",
+        "origin": [-114.06399405236901, 51.04800708837064, 4.9],
+        "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec-m.gltf",
+        "rotation": null
+    }
+
+]
