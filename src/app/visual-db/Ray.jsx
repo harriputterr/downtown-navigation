@@ -76,7 +76,6 @@ export default function model() {
                   child.material.transparent = true;
                   child.material.opacity = 1;
                   child.material.wireframe = true;
-                  console.log(child)
                 }
               });
               pickables.push(model);
@@ -92,7 +91,6 @@ export default function model() {
                   child.material.format = THREE.RGBAFormat;
                   child.material.transparent = true;
                   child.material.opacity = 0.1;
-                  console.log(child)
                 }
               });
               pickables.push(model);
@@ -129,7 +127,6 @@ export default function model() {
       const pickables = []; // Array to store pickable objects
 
       const addSphere = (coords) => {
-        console.log("argument recevied to addSphere: ", coords);
         const sphere = tb
           .sphere({
             radius: 1,
@@ -140,10 +137,10 @@ export default function model() {
           })
           .setCoords(coords);
 
-          console.log(sphere)
+          console.log("This is the sphere you just added! --> ",sphere)
         tb.add(sphere);
 
-        console.log(tb.world.children)
+
       };
 
       let stats = new Stats();
@@ -158,14 +155,12 @@ export default function model() {
         animate();
         map.addLayer(createCustomLayer("3d-model", modelOrigin));
         map.on("click", (event) => {
-          console.log(event);
 
           let intersects = tb.queryRenderedFeatures(event.point);
-          console.log("Intersects:", intersects);
+
           let intersectPointArray;
 
           if (intersects.length == 0) {
-            console.log("Does thsi tun");
             intersectPointArray = [event.lngLat.lng, event.lngLat.lat, 0];
           } else {
             intersectPointArray = [
@@ -174,8 +169,6 @@ export default function model() {
               intersects[0].point.z,
             ];
           }
-
-          console.log(event.lngLat);
 
           addSphere(intersectPointArray);
         });
