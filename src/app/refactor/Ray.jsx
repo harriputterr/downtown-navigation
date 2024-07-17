@@ -1,158 +1,161 @@
 "use client";
-import Threebox from "threebox-plugin/src/Threebox";
+
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef, useState } from "react";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import * as THREE from "three";
 import modelData from "./model-data.json";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiaGFycmlwdXR0ZXJyIiwiYSI6ImNscmw4ZXRvNzBqdzYya3BrcTdhaDlkZGUifQ.croMPXknb0ZuTliWP9BGyw";
+
+import {createMap} from './MapboxMap.jsx'
+import {createThreeboxInstance} from './Threebox'
+import {createCustomLayer} from './MapboxCustomLayer'
+
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 const floorPlanUrl =
   "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec-m.gltf";
 
 export default function model() {
   const [selectedModel, setSelectedModel] = useState(null);
+  const [map, setMap] = useState(null);
+  const [tb, setTb] = useState(null);
+  const [pickables, setPickables] = useState([]);
 
   const mapRef = useRef(null);
 
   useEffect(() => {
-    if (mapRef.current) {
-      const map = new mapboxgl.Map({
-        container: mapRef.current,
-        style: "mapbox://styles/mapbox/light-v9",
-        center: [-114.063775, 51.0475053],
-        zoom: 16,
-        antialias: true,
-        pitch: 60,
-        bearing: 120,
-      });
+    // Creating the mapbox map instance.
+    if (mapRef.current){
+      setMap(createMap(mapRef))
+    }
+  },[])
 
-      const tb = new Threebox(map, map.getCanvas().getContext("webgl"), {
-        realSunlight: true,
-        sky: true,
-        enableSelectingObjects: true,
-        enableTooltips: true,
-      });
+  useEffect(() => {
+   if (map){
+     // Creating the Threebox Instance
+       setTb(createThreeboxInstance(map));
+   }
+  },[map])
 
+  useEffect(() => {
+      if (tb){
+        // Attaching the threebox instance to the global window object to make it available globally.
       window.tb = tb;
 
-      const modelOrigin = [-114.06403763213298, 51.04794111891039];
+      // const createCustomLayer = (layerName) => {
+      //   return {
+      //     id: layerName,
+      //     type: "custom",
+      //     renderingMode: "3d",
+      //     onAdd: function (map, gl) {
 
-      const createCustomLayer = (layerName, origin) => {
-        return {
-          id: layerName,
-          type: "custom",
-          renderingMode: "3d",
-          onAdd: function (map, gl) {
+      //       const createModels = (modelData) => {
+      //         const options = {
+      //           type: "gltf",
+      //           obj: modelData.url,
+      //           units: "meters",
+      //           scale: 1,
+      //           rotation: modelData.rotation
+      //             ? modelData.rotation
+      //             : { x: 90, y: 180, z: 0 },
+      //           anchor: "center",
+      //           bbox: false,
+      //         };
 
-            const createModels = (modelData) => {
-              const options = {
-                type: "gltf",
-                obj: modelData.url,
-                units: "meters",
-                scale: 1,
-                rotation: modelData.rotation
-                  ? modelData.rotation
-                  : { x: 90, y: 180, z: 0 },
-                anchor: "center",
-                bbox: false,
-              };
+      //         tb.loadObj(options, function (model) {
+      //           model.setCoords(modelData.origin);
+      //           model.addTooltip(modelData.name);
+      //           model.traverse((child) => {
+      //             if (child.isMesh && child.material){
+      //               child.nameId = modelData.id
+      //             }
+      //           })
+      //           model.nameId = modelData.id
 
-              tb.loadObj(options, function (model) {
-                model.setCoords(modelData.origin);
-                model.addTooltip(modelData.name);
-                model.traverse((child) => {
-                  if (child.isMesh && child.material){
-                    child.nameId = modelData.id
-                  }
-                })
-                model.nameId = modelData.id
+      //           tb.add(model);
+      //           pickables.push(model);
+      //         });
 
-                tb.add(model);
-                pickables.push(model);
-              });
+      //         highlightOrigin(modelData.origin);
+      //       };
+      //       // const secOptions = {
+      //       //   type: "gltf",
+      //       //   obj: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf",
+      //       //   units: "meters",
+      //       //   scale: 1,
+      //       //   rotation: { x: 90, y: 180, z: 0 },
+      //       //   anchor: "center",
+      //       //   bbox: false,
+      //       // };
 
-              highlightOrigin(modelData.origin);
-            };
-            // const secOptions = {
-            //   type: "gltf",
-            //   obj: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec.gltf",
-            //   units: "meters",
-            //   scale: 1,
-            //   rotation: { x: 90, y: 180, z: 0 },
-            //   anchor: "center",
-            //   bbox: false,
-            // };
+      //       // const floorPlanOptions = {
+      //       //   type: "gltf",
+      //       //   obj: floorPlanUrl,
+      //       //   units: "meters",
+      //       //   scale: 1,
+      //       //   rotation: { x: 90, y: 180, z: 0 },
+      //       //   anchor: "center",
+      //       //   bbox: false,
+      //       // };
 
-            // const floorPlanOptions = {
-            //   type: "gltf",
-            //   obj: floorPlanUrl,
-            //   units: "meters",
-            //   scale: 1,
-            //   rotation: { x: 90, y: 180, z: 0 },
-            //   anchor: "center",
-            //   bbox: false,
-            // };
+      //       // tb.loadObj(secOptions, function (model) {
+      //       //   model.setCoords(origin);
+      //       //   model.addTooltip(
+      //       //     "Suncor Energy Center Building in Calgary Downtown"
+      //       //   );
+      //       //   tb.add(model);
+      //       //   model.traverse((child) => {
+      //       //     if (child.isMesh && child.material) {
+      //       //       child.material.format = THREE.RGBAFormat;
+      //       //       child.material.transparent = true;
+      //       //       child.material.opacity = 1;
+      //       //       child.material.wireframe = true;
+      //       //       console.log(child)
+      //       //     }
+      //       //   });
+      //       //   pickables.push(model);
+      //       // });
 
-            // tb.loadObj(secOptions, function (model) {
-            //   model.setCoords(origin);
-            //   model.addTooltip(
-            //     "Suncor Energy Center Building in Calgary Downtown"
-            //   );
-            //   tb.add(model);
-            //   model.traverse((child) => {
-            //     if (child.isMesh && child.material) {
-            //       child.material.format = THREE.RGBAFormat;
-            //       child.material.transparent = true;
-            //       child.material.opacity = 1;
-            //       child.material.wireframe = true;
-            //       console.log(child)
-            //     }
-            //   });
-            //   pickables.push(model);
-            // });
+      //       // tb.loadObj(floorPlanOptions, function (model) {
+      //       //   const origin = [-114.06399405236901, 51.04800708837064, 4.9];
+      //       //   model.setCoords(origin);
+      //       //   tb.add(model);
 
-            // tb.loadObj(floorPlanOptions, function (model) {
-            //   const origin = [-114.06399405236901, 51.04800708837064, 4.9];
-            //   model.setCoords(origin);
-            //   tb.add(model);
+      //       //   model.traverse((child) => {
+      //       //     if (child.isMesh && child.material) {
+      //       //       child.material.format = THREE.RGBAFormat;
+      //       //       child.material.transparent = true;
+      //       //       child.material.opacity = 0.1;
+      //       //       console.log(child)
+      //       //     }
+      //       //   });
+      //       //   pickables.push(model);
 
-            //   model.traverse((child) => {
-            //     if (child.isMesh && child.material) {
-            //       child.material.format = THREE.RGBAFormat;
-            //       child.material.transparent = true;
-            //       child.material.opacity = 0.1;
-            //       console.log(child)
-            //     }
-            //   });
-            //   pickables.push(model);
+      //       //   highlightOrigin(origin);
+      //       // });
 
-            //   highlightOrigin(origin);
-            // });
+      //       const highlightOrigin = (origin) => {
+      //         const sphere = tb
+      //           .sphere({
+      //             radius: 1, // adjust radius as needed
+      //             units: "meters",
+      //             color: "black",
+      //             material: "MeshToonMaterial",
+      //             anchor: "center",
+      //           })
+      //           .setCoords(origin);
 
-            const highlightOrigin = (origin) => {
-              const sphere = tb
-                .sphere({
-                  radius: 1, // adjust radius as needed
-                  units: "meters",
-                  color: "black",
-                  material: "MeshToonMaterial",
-                  anchor: "center",
-                })
-                .setCoords(origin);
-
-              tb.add(sphere);
-            };
-            modelData.map((element) => {
-              createModels(element);
-            });
-          },
-          render: function (gl, matrix) {
-            tb.update();
-          },
-        };
-      };
+      //         tb.add(sphere);
+      //       };
+      //       modelData.map((element) => {
+      //         createModels(element);
+      //       });
+      //     },
+      //     render: function (gl, matrix) {
+      //       tb.update();
+      //     },
+      //   };
+      // };
 
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.15); // Soft white light
       tb.add(ambientLight);
@@ -160,8 +163,6 @@ export default function model() {
       const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
       directionalLight.position.set(100, 100, 100).normalize();
       tb.add(directionalLight);
-
-      const pickables = []; // Array to store pickable objects
 
       const addSphere = (coords) => {
         const sphere = tb
@@ -187,7 +188,7 @@ export default function model() {
       map.on("style.load", function () {
         map.getContainer().appendChild(stats.dom);
         animate();
-        map.addLayer(createCustomLayer("3d-model", modelOrigin));
+        map.addLayer(createCustomLayer("3d-model", tb, modelData, setPickables));
         map.on("click", (event) => {
 
           let intersects = tb.queryRenderedFeatures(event.point);
@@ -212,8 +213,9 @@ export default function model() {
       return () => {
         map.remove();
       };
-    }
-  }, []);
+      }
+    
+  }, [tb]);
 
   const handleHide = () => {
     if (selectedModel) {

@@ -23,8 +23,7 @@ export default function model() {
         center: [-114.063775, 51.0475053],
         zoom: 16,
         antialias: true,
-        pitch: 60,
-        bearing: 120,
+        pitch: 70
       });
 
       const tb = new Threebox(map, map.getCanvas().getContext("webgl"), {
@@ -32,6 +31,8 @@ export default function model() {
         sky: true,
         enableSelectingObjects: true,
         enableTooltips: true,
+        orthographic: true,
+
       });
 
       window.tb = tb;
@@ -64,22 +65,22 @@ export default function model() {
               bbox: false,
             };
 
-            tb.loadObj(secOptions, function (model) {
-              model.setCoords(origin);
-              model.addTooltip(
-                "Suncor Energy Center Building in Calgary Downtown"
-              );
-              tb.add(model);
-              model.traverse((child) => {
-                if (child.isMesh && child.material) {
-                  child.material.format = THREE.RGBAFormat;
-                  child.material.transparent = true;
-                  child.material.opacity = 1;
-                  child.material.wireframe = true;
-                }
-              });
-              pickables.push(model);
-            });
+            // tb.loadObj(secOptions, function (model) {
+            //   model.setCoords(origin);
+            //   model.addTooltip(
+            //     "Suncor Energy Center Building in Calgary Downtown"
+            //   );
+            //   tb.add(model);
+            //   model.traverse((child) => {
+            //     if (child.isMesh && child.material) {
+            //       child.material.format = THREE.RGBAFormat;
+            //       child.material.transparent = true;
+            //       child.material.opacity = 1;
+            //       // child.material.wireframe = true;
+            //     }
+            //   });
+            //   pickables.push(model);
+            // });
 
             tb.loadObj(floorPlanOptions, function (model) {
               const origin = [-114.06399405236901, 51.04800708837064, 4.9];
@@ -134,12 +135,16 @@ export default function model() {
             color: "green",
             material: "MeshToonMaterial",
             anchor: "center",
+            tooltip: false
           })
           .setCoords(coords);
+
+          // sphere.addTooltip("")
 
           console.log("This is the sphere you just added! --> ",sphere)
         tb.add(sphere);
 
+        
 
       };
 
