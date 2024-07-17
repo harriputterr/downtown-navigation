@@ -1,4 +1,4 @@
-import Ray from './Ray'
+import Ray from './VisualDB'
 
 export default function page() {
 
