@@ -1,10 +1,10 @@
-import Ray from './VisualDB'
+import VisualDB from './VisualDB'
 
 export default function page() {
 
   return (
     <>
-        <Ray />
+      <VisualDB />
     </>
   )
 }

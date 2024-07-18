@@ -8,19 +8,17 @@ import modelData from "./prototype-structure-data/model-data.json";
 import { createMap } from "./components/MapboxMap.jsx";
 import { createThreeboxInstance } from "./components/Threebox.jsx";
 import { createCustomLayer } from "./components/MapboxCustomLayer.jsx";
-import { addLights } from "./components/Lights.jsx";
+import { addDataNode } from "./components/AddDateNode.jsx";
+import { addMapEventHandlers } from "./components/MapEvents.jsx";
 
-const floorPlanUrl =
-  "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/sec-m.gltf";
-
-export default function model() {
-  const [selectedModel, setSelectedModel] = useState(null);
+export default function VisualDB() {
+  const [selectedNode, setSelectedNode] = useState(null);
   const [map, setMap] = useState(null);
   const [tb, setTb] = useState(null);
   const [pickables, setPickables] = useState([]);
-
   const mapRef = useRef(null);
 
+  console.log("Hello I am the main component")
   useEffect(() => {
     // Creating the mapbox map instance.
     if (mapRef.current) {
@@ -40,78 +38,33 @@ export default function model() {
       // Attaching the threebox instance to the global window object to make it available globally.
       window.tb = tb;
 
-      addLights(tb);
-
-      const addSphere = (coords) => {
-        const sphere = tb
-          .sphere({
-            radius: 1,
-            units: "meters",
-            color: "green",
-            material: "MeshToonMaterial",
-            anchor: "center",
-          })
-          .setCoords(coords);
-
-        tb.add(sphere);
-      };
-
+      // Instantiate a Stats object.
       let stats = new Stats();
 
+      // Creating an animate function to which will be called recursively when the map loads.
       const animate = () => {
         requestAnimationFrame(animate);
         stats.update();
       };
 
-      map.on("style.load", function () {
-        map.getContainer().appendChild(stats.dom);
-        animate();
-        map.addLayer(
-          createCustomLayer("3d-model", tb, modelData, setPickables)
-        );
-        map.on("click", (event) => {
-          let intersects = tb.queryRenderedFeatures(event.point);
-
-          console.log("Intersects:", intersects);
-          let intersectPointArray;
-
-          if (intersects.length == 0) {
-            intersectPointArray = [event.lngLat.lng, event.lngLat.lat, 0];
-          } else {
-            intersectPointArray = [
-              event.lngLat.lng,
-              event.lngLat.lat,
-              intersects[0].point.z,
-            ];
-          }
-
-          addSphere(intersectPointArray);
-        });
-      });
+      // Adding Map Event Handlers
+      addMapEventHandlers(
+        map,
+        tb,
+        stats,
+        animate,
+        createCustomLayer,
+        addDataNode,
+        modelData,
+        setPickables,
+        setSelectedNode
+      );
 
       return () => {
         map.remove();
       };
     }
   }, [tb]);
-
-  const handleHide = () => {
-    if (selectedModel) {
-      selectedModel.visible = false;
-    }
-  };
-
-  const handleOpacityChange = (event) => {
-    if (selectedModel) {
-      const newOpacity = parseFloat(event.target.value);
-      selectedModel.traverse((child) => {
-        if (child.isMesh) {
-          child.material.opacity = newOpacity;
-          child.material.transparent = true;
-        }
-      });
-    }
-  };
 
   return (
     <>
