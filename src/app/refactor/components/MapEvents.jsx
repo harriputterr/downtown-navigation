@@ -1,4 +1,4 @@
-export const addMapEventHandlers = (
+export const loadCustomLayer = (
   map,
   tb,
   stats,
