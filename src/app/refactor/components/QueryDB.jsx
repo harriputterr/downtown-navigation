@@ -1,6 +1,5 @@
-export async function queryDB({ query, type }) {
+export async function queryDB({ query, type, params }) {
   try {
-
     const response = await fetch("/api/query", {
       method: "POST",
       headers: {
@@ -9,6 +8,7 @@ export async function queryDB({ query, type }) {
       body: JSON.stringify({
         query: query,
         type: type,
+        params: params
       }),
     });
 

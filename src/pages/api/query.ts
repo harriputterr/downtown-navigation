@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { query, params, type } = req.body;
-console.log(type)
+
   try {
     let result;
     if (type === "read") {

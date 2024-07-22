@@ -1,4 +1,5 @@
-export const loadCustomLayer = (
+import { loadDbData } from './LoadDbData'
+export const loadCustomLayerAndEventListeners = (
   map,
   tb,
   stats,
@@ -9,17 +10,27 @@ export const loadCustomLayer = (
   setPickables,
   setSelectedNode
 ) => {
-  map.on("style.load", function () {
+  map.on("style.load", async function () {
     map.getContainer().appendChild(stats.dom);
+
+    stats.dom.style.cssText = '';
+    stats.dom.style.position = 'fixed';
+    stats.dom.style.bottom = '0px';
+    stats.dom.style.left = '0px';
+    stats.dom.style.cursor = 'pointer';
+    stats.dom.style.opacity = '0.9';
+    stats.dom.style.zIndex = '10000';
 
     animate();
 
     map.addLayer(createCustomLayer("3d-model", tb, modelData, setPickables));
 
+    // Fetch and add all of the data nodes from neo4j DB
+    await loadDbData(tb, setSelectedNode);
+
     map.on("click", (event) => {
       let intersects = tb.queryRenderedFeatures(event.point);
 
-      console.log("Intersects:", intersects);
       let intersectPoint;
 
       if (intersects.length == 0) {
@@ -36,7 +47,7 @@ export const loadCustomLayer = (
       const isSphereGeometry = intersects[0]?.object?.geometry?.type === "SphereGeometry"
 
       if (!isSphereGeometry || isSphereGeometry == undefined){
-        addDataNode(tb, intersectPoint, setSelectedNode);
+        addDataNode({tb, coords: intersectPoint, uuid: null, addToDb: true}, setSelectedNode);
       }
 
     });

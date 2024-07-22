@@ -9,18 +9,17 @@ import { createMap } from "./components/MapboxMap.jsx";
 import { createThreeboxInstance } from "./components/Threebox.jsx";
 import { createCustomLayer } from "./components/MapboxCustomLayer.jsx";
 import { addDataNode } from "./components/AddDateNode.jsx";
-import { loadCustomLayer } from "./components/MapEvents.jsx";
-import {loadData} from "./components/QueryDB"
+import { loadCustomLayerAndEventListeners } from "./components/PostMapLoad.jsx";
 
-export default function VisualDB() {
-  const [selectedNode, setSelectedNode] = useState(null);
+export default function VisualDB({setSelectedNode}) {
+  
+  
   const [map, setMap] = useState(null);
   const [tb, setTb] = useState(null);
   const [pickables, setPickables] = useState([]);
   const mapRef = useRef(null);
 
   useEffect(() => {
-
     // Creating the mapbox map instance.
     if (mapRef.current) {
       setMap(createMap(mapRef));
@@ -37,6 +36,7 @@ export default function VisualDB() {
     if (map) {
       // Creating the Threebox Instance
       setTb(createThreeboxInstance(map));
+      
     }
   }, [map]);
 
@@ -54,7 +54,7 @@ export default function VisualDB() {
       };
 
       // Loading our Customer Layer with all of the Map events
-      loadCustomLayer(
+      loadCustomLayerAndEventListeners(
         map,
         tb,
         stats,
