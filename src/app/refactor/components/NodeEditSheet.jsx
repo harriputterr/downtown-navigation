@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { queryDB } from "./QueryDB";
 
 export default function NodeEditSheet({ selectedNode, className }) {
   const [x, setX] = useState(0);
@@ -30,6 +31,25 @@ export default function NodeEditSheet({ selectedNode, className }) {
       setZ(0);
     }
   }, [selectedNode]);
+
+  async function handleSubmit() {
+
+    const query = `
+    MATCH (n: Node {uuid: $uuid})
+    SET n.point = point({x: $x, y: $y, z: $z})
+    RETURN n;
+    `
+    const uuid = selectedNode.uuid;
+    const params = { uuid, x, y, z };
+
+    const result = await queryDB({
+      query: query,
+      type: "write",
+      params: params,
+    });
+
+    console.log(result)
+  }
 
   return (
     <Sheet>
@@ -49,17 +69,16 @@ export default function NodeEditSheet({ selectedNode, className }) {
               Longitude | x
             </Label>
             <Input
-            type="number"
+              type="number"
               id="longitude"
               value={x}
               className="col-span-3"
               onChange={(event) => {
-                if (event.target.value === ""){
-                  setX(0)
-                }else{
+                if (event.target.value === "") {
+                  setX(0);
+                } else {
                   setX(Number(event.target.value));
                 }
-                console.log(x)
               }}
             />
           </div>
@@ -98,10 +117,12 @@ export default function NodeEditSheet({ selectedNode, className }) {
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+            <Button onClick={handleSubmit} type="submit">
+              Save changes
+            </Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
-    </Sheet>
+    </Sheet >
   );
 }

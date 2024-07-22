@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils"
 import { Inter as FontSans } from "next/font/google"
-import { ThemeProvider } from 'shadcn';
+
 
 export const metadata: Metadata = {
   title: "Create Next App",

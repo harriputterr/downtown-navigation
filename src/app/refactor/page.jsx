@@ -10,15 +10,14 @@ export default function page() {
 
   return (
     <>
-      <VisualDB setSelectedNode={setSelectedNode} />
+        <VisualDB setSelectedNode={setSelectedNode} />
 
-      {
-        selectedNode && <NodeEditSheet
-        selectedNode={selectedNode}
-        className="absolute top-0 left-0 bg-white  border border-gray-300 shadow-lg"
-      />
-      }
-      
+        {selectedNode && (
+          <NodeEditSheet
+            selectedNode={selectedNode}
+            className="absolute top-0 left-0 bg-white  border border-gray-300 shadow-lg"
+          />
+        )}
     </>
   );
 }
