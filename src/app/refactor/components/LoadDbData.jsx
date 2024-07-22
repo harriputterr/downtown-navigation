@@ -1,7 +1,7 @@
 import {queryDB} from "./QueryDB";
 import { addDataNode } from "./AddDateNode";
 
-export async function loadDbData(tb, setSelectedNode) {
+export async function loadDbData(tb, setNodeStateObj) {
   const query = "MATCH (n) RETURN n;";
   const result = await queryDB({ query, type: "read" });
 
@@ -13,7 +13,7 @@ export async function loadDbData(tb, setSelectedNode) {
         const {x, y, z} = e.n.properties.point
         const uuid = e.n.properties.uuid
         const coords = [x, y, z];
-        addDataNode({tb, coords, uuid}, setSelectedNode)
+        addDataNode({tb, coords, uuid}, setNodeStateObj)
     })
   return result;
 }

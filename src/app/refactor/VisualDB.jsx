@@ -11,11 +11,11 @@ import { createCustomLayer } from "./components/MapboxCustomLayer.jsx";
 import { addDataNode } from "./components/AddDateNode.jsx";
 import { loadCustomLayerAndEventListeners } from "./components/PostMapLoad.jsx";
 
-export default function VisualDB({setSelectedNode}) {
+export default function VisualDB({setNodeStateObj, tb, setTb, map, setMap}) {
   
   
-  const [map, setMap] = useState(null);
-  const [tb, setTb] = useState(null);
+  
+  
   const [pickables, setPickables] = useState([]);
   const mapRef = useRef(null);
 
@@ -63,7 +63,7 @@ export default function VisualDB({setSelectedNode}) {
         addDataNode,
         modelData,
         setPickables,
-        setSelectedNode
+        setNodeStateObj
       );
 
       return () => {

@@ -15,7 +15,10 @@ import {
 } from "@/components/ui/sheet";
 import { queryDB } from "./QueryDB";
 
-export default function NodeEditSheet({ selectedNode, className }) {
+export default function NodeEditSheet({ nodeStateObj, className }) {
+
+  const selectedNode = nodeStateObj.selectedNode;
+
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [z, setZ] = useState(0);
@@ -54,7 +57,7 @@ export default function NodeEditSheet({ selectedNode, className }) {
   return (
     <Sheet>
       <SheetTrigger className={className} asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="outline">Edit Node</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -87,6 +90,7 @@ export default function NodeEditSheet({ selectedNode, className }) {
               Latitude | y
             </Label>
             <Input
+            type="number"
               id="latitude"
               value={y}
               className="col-span-3"
@@ -100,6 +104,7 @@ export default function NodeEditSheet({ selectedNode, className }) {
               Height | z
             </Label>
             <Input
+            type="number"
               id="height"
               value={z}
               className="col-span-3"
