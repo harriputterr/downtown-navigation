@@ -14,6 +14,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { queryDB } from "./QueryDB";
+import {deleteDataNode} from './DataNodeCRUD'
+import {findObjectInWorld} from './FindObjectInWorld';
 
 export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
   const selectedNode = nodeStateObj.selectedNode;
@@ -49,23 +51,28 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
       params: params,
     });
 
-    let foundNode = null;
 
-    tb.world.children.forEach((object) => {
-      object.traverse((child) => {
-        if (child.uuid === uuid) {
-          foundNode = child;
-        }
-      });
-    });
+    let foundNode = findObjectInWorld(uuid);
 
     await foundNode.setCoords([x, y, z]);
-
-    console.log(foundNode)
 
     tb.update()
     map.repaint = true;
     
+  }
+
+  async function handleDelete(){
+    // Deletes the Data node from the DB
+    const deleteNodeUUID = selectedNode.uuid;
+    deleteDataNode(deleteNodeUUID);
+
+    // Removes the data node from the map.Specifically through the world array.
+    const sphere = findObjectInWorld(deleteNodeUUID)
+    tb.remove(sphere);
+
+    tb.update();
+    map.repaint = true;
+
   }
 
   return (
@@ -75,7 +82,7 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit Node</SheetTitle>
+          <SheetTitle >Edit Node</SheetTitle>
           <SheetDescription>
             Make changes to your Node here. Click save when you're done.
           </SheetDescription>
@@ -138,6 +145,11 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
           <SheetClose asChild>
             <Button onClick={handleSubmit} type="submit">
               Save changes
+            </Button>
+          </SheetClose>
+          <SheetClose asChild>
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
             </Button>
           </SheetClose>
         </SheetFooter>

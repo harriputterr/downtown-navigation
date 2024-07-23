@@ -8,7 +8,7 @@ import modelData from "./prototype-structure-data/model-data.json";
 import { createMap } from "./components/MapboxMap.jsx";
 import { createThreeboxInstance } from "./components/Threebox.jsx";
 import { createCustomLayer } from "./components/MapboxCustomLayer.jsx";
-import { addDataNode } from "./components/AddDateNode.jsx";
+import { addDataNode } from "./components/DataNodeCRUD.jsx";
 import { loadCustomLayerAndEventListeners } from "./components/PostMapLoad.jsx";
 
 export default function VisualDB({setNodeStateObj, tb, setTb, map, setMap}) {

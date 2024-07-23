@@ -2,7 +2,7 @@ import { queryDB } from "./QueryDB";
 import { getNodeByUUID } from "./GetNode";
 
 export const addDataNode = async (
-  { tb, coords, uuid, addToDb = false },
+  { tb, coords, map, uuid, addToDb = false },
   setNodeStateObj
 ) => {
   const [x, y, z] = coords;
@@ -45,6 +45,8 @@ export const addDataNode = async (
   });
 
   if (addToDb && !uuid) {
+    console.log(sphere)
+    
     const query = `
     CREATE (n:Node {
         uuid: $uuid,
@@ -60,6 +62,22 @@ export const addDataNode = async (
 
   sphere.addTooltip(sphere.uuid);
   tb.add(sphere);
+  
+  tb.update();
+  map.repaint = true;
 
   return sphere;
 };
+
+export async function deleteDataNode(uuid) {
+  const query = `MATCH (n {uuid: $uuid}) DELETE n;`;
+  const params = { uuid };
+
+  try {
+    const result = await queryDB({ query, type: "write", params });
+    return { success: true, message: "Node deleted successfully", result };
+  } catch (error) {
+    console.error("Error deleting node:", error);
+    return { success: false, message: "Error deleting node", error };
+  }
+}

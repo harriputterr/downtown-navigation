@@ -26,7 +26,7 @@ export const loadCustomLayerAndEventListeners = (
     map.addLayer(createCustomLayer("3d-model", tb, modelData, setPickables));
 
     // Fetch and add all of the data nodes from neo4j DB
-    await loadDbData(tb, setNodeStateObj);
+    await loadDbData(tb, setNodeStateObj, map);
 
     // const nodeAPointGeometry = [-114.0640229592601, 51.04747031024641, 0];
 
@@ -66,7 +66,7 @@ export const loadCustomLayerAndEventListeners = (
 
       if (!isSphereGeometry || isSphereGeometry == undefined) {
         addDataNode(
-          { tb, coords: intersectPoint, uuid: null, addToDb: true },
+          { tb, coords: intersectPoint, map, uuid: null, addToDb: true },
           setNodeStateObj
         );
       }

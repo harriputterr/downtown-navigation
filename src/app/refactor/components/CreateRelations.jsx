@@ -7,25 +7,9 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
   if (nodeStateObj.nodeA && nodeStateObj.nodeB) {
     areTwoSelected = true;
   }
-
+  
   function handleClick() {
-    // const geometry = new THREE.Geometry();
-    // geometry.vertices.push(
-    //   new THREE.Vector3(
-    //     nodeStateObj.nodeA.point.x,
-    //     nodeStateObj.nodeA.point.y,
-    //     nodeStateObj.nodeA.point.z
-    //   ),
-    //   new THREE.Vector3(
-    //     nodeStateObj.nodeB.point.x,
-    //     nodeStateObj.nodeB.point.y,
-    //     nodeStateObj.nodeB.point.z
-    //   )
-    // );
-
-    // const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
-    // const line = new THREE.Line(geometry, material);
-    // tb.add(line);
+ 
     const nodeAPointGeometry = [
       nodeStateObj.nodeA.point.x,
       nodeStateObj.nodeA.point.y,
@@ -49,7 +33,7 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
 
     const options = {
       geometry: lineGeometry,
-      width: 5,
+      width: 10,
       color: "red"
     }
 
@@ -58,6 +42,7 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
     tb.add(line)
     map.repaint = true;
     tb.update()
+    console.log(tb.world.children)
   }
   return (
     <>
