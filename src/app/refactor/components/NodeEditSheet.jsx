@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { queryDB } from "./QueryDB";
 
-export default function NodeEditSheet({ nodeStateObj, className }) {
-
+export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
   const selectedNode = nodeStateObj.selectedNode;
 
   const [x, setX] = useState(0);
@@ -36,12 +35,11 @@ export default function NodeEditSheet({ nodeStateObj, className }) {
   }, [selectedNode]);
 
   async function handleSubmit() {
-
     const query = `
     MATCH (n: Node {uuid: $uuid})
     SET n.point = point({x: $x, y: $y, z: $z})
     RETURN n;
-    `
+    `;
     const uuid = selectedNode.uuid;
     const params = { uuid, x, y, z };
 
@@ -51,7 +49,23 @@ export default function NodeEditSheet({ nodeStateObj, className }) {
       params: params,
     });
 
-    console.log(result)
+    let foundNode = null;
+
+    tb.world.children.forEach((object) => {
+      object.traverse((child) => {
+        if (child.uuid === uuid) {
+          foundNode = child;
+        }
+      });
+    });
+
+    await foundNode.setCoords([x, y, z]);
+
+    console.log(foundNode)
+
+    tb.update()
+    map.repaint = true;
+    
   }
 
   return (
@@ -90,7 +104,7 @@ export default function NodeEditSheet({ nodeStateObj, className }) {
               Latitude | y
             </Label>
             <Input
-            type="number"
+              type="number"
               id="latitude"
               value={y}
               className="col-span-3"
@@ -104,7 +118,7 @@ export default function NodeEditSheet({ nodeStateObj, className }) {
               Height | z
             </Label>
             <Input
-            type="number"
+              type="number"
               id="height"
               value={z}
               className="col-span-3"
@@ -128,6 +142,6 @@ export default function NodeEditSheet({ nodeStateObj, className }) {
           </SheetClose>
         </SheetFooter>
       </SheetContent>
-    </Sheet >
+    </Sheet>
   );
 }

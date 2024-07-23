@@ -30,6 +30,8 @@ export default function page() {
         <NodeEditSheet
           nodeStateObj={nodeStateObj}
           className="absolute top-0 left-0 bg-white  border border-gray-300 shadow-lg"
+          map={map}
+          tb={tb}
         />
       )}
 

@@ -32,11 +32,15 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
       nodeStateObj.nodeA.point.z,
     ];
 
+    console.log(nodeAPointGeometry)
+
     const nodeBPointGeometry = [
       nodeStateObj.nodeB.point.x,
       nodeStateObj.nodeB.point.y,
       nodeStateObj.nodeB.point.z,
     ];
+
+    console.log(nodeBPointGeometry)
 
     const lineGeometry = [
       nodeAPointGeometry,
@@ -45,12 +49,15 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
 
     const options = {
       geometry: lineGeometry,
+      width: 5,
+      color: "red"
     }
 
     const line = tb.line(options);
     console.log(line)
-
+    tb.add(line)
     map.repaint = true;
+    tb.update()
   }
   return (
     <>
