@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/types/models.ts", "src/app/visual-db/Model.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/types/models.ts", "src/app/visual-db/Model.jsx", "src/utils/mapUtils.js"],
   "exclude": ["node_modules"]
 }
