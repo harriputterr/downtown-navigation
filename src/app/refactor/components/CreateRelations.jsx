@@ -2,6 +2,80 @@ import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { queryDB } from './QueryDB'
 
+
+
+export const getRelationships = async () => {
+  const query = `
+    MATCH (a:Node)-[r:CONNECTED]->(b:Node)
+    RETURN a, b, r;
+  `;
+
+  try {
+    const result = await queryDB({ query, type: 'read' });
+    return result;
+  } catch (error) {
+    console.error('Error fetching relationships:', error);
+    return [];
+  }
+};
+
+export const recreateLines = (map, tb, relationships) => {
+  relationships.data.forEach(rel => {
+    const nodeA = rel.a.properties;
+    const nodeB = rel.b.properties;
+    const lineUUID = rel.r.properties.uuid;
+
+    const nodeAPointGeometry = [
+      nodeA.point.x,
+      nodeA.point.y,
+      nodeA.point.z,
+    ];
+
+    const nodeBPointGeometry = [
+      nodeB.point.x,
+      nodeB.point.y,
+      nodeB.point.z,
+    ];
+
+    const lineGeometry = [
+      nodeAPointGeometry,
+      nodeBPointGeometry,
+    ];
+
+    const options = {
+      geometry: lineGeometry,
+      width: 5,
+      color: 'red',
+    };
+
+    const midpoint = [
+      (nodeAPointGeometry[0] + nodeBPointGeometry[0]) / 2,
+      (nodeAPointGeometry[1] + nodeBPointGeometry[1]) / 2,
+      (nodeAPointGeometry[2] + nodeBPointGeometry[2]) / 2,
+    ];
+
+    const line = tb.line(options);
+    line.uuid = lineUUID;  // Set the UUID from the database
+    tb.add(line);
+
+    const tooltipElement = document.createElement('div');
+    tooltipElement.className = 'tooltip';
+    tooltipElement.innerHTML = `<p>${line.uuid}</p>`;
+
+    const tooltipOptions = {
+      htmlElement: tooltipElement,
+      alwaysVisible: true,
+    };
+
+    const tooltip = tb.label(tooltipOptions).setCoords(midpoint);
+    tb.add(tooltip);
+  });
+
+  map.repaint = true;
+  tb.update();
+};
+
+
 export default function CreateRelations({ nodeStateObj, className, tb, map }) {
   let areTwoSelected = false;
 
@@ -76,7 +150,7 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
     const lineUUID = line.uuid; 
     const query = `
       MATCH (a: Node {uuid: $nodeAUUID}), (b: Node {uuid: $nodeBUUID})
-      CREATE (a)-[r:CONNECTED {uuid: $lineUUID}]->(b)
+      CREATE (a)-[r:CONNECTED {uuid: $lineUUID, fromNode: $nodeAUUID, toNode: $nodeBUUID}]->(b)
       RETURN r;
     `
     const params = {

@@ -7,6 +7,9 @@ export default async function handler(
 ) {
   const { query, params, type } = req.body;
 
+  console.log("This is the query", query )
+  console.log("This is the params", params )
+  console.log("This is the type", type)
   try {
     let result;
     if (type === "read") {
@@ -18,6 +21,7 @@ export default async function handler(
     }
     res.status(200).json({ data: result });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error });
   }
 }

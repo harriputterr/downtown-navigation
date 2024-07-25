@@ -1,4 +1,5 @@
 import { loadDbData } from "./LoadDbData";
+import { getRelationships, recreateLines } from "./CreateRelations";
 export const loadCustomLayerAndEventListeners = (
   map,
   tb,
@@ -27,11 +28,13 @@ export const loadCustomLayerAndEventListeners = (
 
     // Fetch and add all of the data nodes from neo4j DB
     await loadDbData(tb, setNodeStateObj, map);
-
+    const relationships = await getRelationships();
+    recreateLines(map, tb, relationships);
    
 
     map.on("click", (event) => {
 
+      
       
       let intersects = tb.queryRenderedFeatures(event.point);
 

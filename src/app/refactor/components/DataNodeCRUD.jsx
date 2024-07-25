@@ -70,7 +70,8 @@ export const addDataNode = async (
 };
 
 export async function deleteDataNode(uuid) {
-  const query = `MATCH (n {uuid: $uuid}) DELETE n;`;
+  const query = ` MATCH (n {uuid: $uuid})
+    DETACH DELETE n;`;
   const params = { uuid };
 
   try {

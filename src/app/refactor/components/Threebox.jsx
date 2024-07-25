@@ -6,7 +6,7 @@ export const createThreeboxInstance = (map) => {
     sky: true,
     enableSelectingObjects: true,
     enableTooltips: true,
-    orthographic: true,
+    // orthographic: true,
     enableTooltips: true
   });
 

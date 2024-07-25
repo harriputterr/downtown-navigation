@@ -1,4 +1,5 @@
 export async function queryDB({ query, type, params }) {
+  console.log(query, type, params)
   try {
     const response = await fetch("/api/query", {
       method: "POST",

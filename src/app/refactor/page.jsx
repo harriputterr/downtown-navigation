@@ -3,6 +3,7 @@ import VisualDB from "./VisualDB";
 import { useState } from "react";
 import NodeEditSheet from "./components/NodeEditSheet.jsx";
 import CreateRelations from "./components/CreateRelations";
+import DeleteRelationSheet from "./components/DeleteRelationViaUUID";
 
 export default function page() {
   const [tb, setTb] = useState(null);
@@ -18,7 +19,8 @@ export default function page() {
 
   return (
     <>
-      <VisualDB
+    <div>
+    <VisualDB
         setNodeStateObj={setNodeStateObj}
         tb={tb}
         setTb={setTb}
@@ -35,12 +37,17 @@ export default function page() {
         />
       )}
 
+      <DeleteRelationSheet />
+ 
+
       <CreateRelations
-        className={"absolute top-0 right-0  border border-gray-300 shadow-lg"}
+        className={"absolute top-0 right-0 border border-gray-300 shadow-lg"}
         nodeStateObj={nodeStateObj}
         tb={tb}
         map={map}
       />
+    </div>
+      
     </>
   );
 }

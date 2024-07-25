@@ -11,11 +11,7 @@ import { createCustomLayer } from "./components/MapboxCustomLayer.jsx";
 import { addDataNode } from "./components/DataNodeCRUD.jsx";
 import { loadCustomLayerAndEventListeners } from "./components/PostMapLoad.jsx";
 
-export default function VisualDB({setNodeStateObj, tb, setTb, map, setMap}) {
-  
-  
-  
-  
+export default function VisualDB({ setNodeStateObj, tb, setTb, map, setMap }) {
   const [pickables, setPickables] = useState([]);
   const mapRef = useRef(null);
 
@@ -26,8 +22,6 @@ export default function VisualDB({setNodeStateObj, tb, setTb, map, setMap}) {
     }
   }, []);
 
-
-
   // useEffect(() => {
   //   loadData();
   // }, []);
@@ -36,7 +30,6 @@ export default function VisualDB({setNodeStateObj, tb, setTb, map, setMap}) {
     if (map) {
       // Creating the Threebox Instance
       setTb(createThreeboxInstance(map));
-      
     }
   }, [map]);
 
@@ -74,7 +67,8 @@ export default function VisualDB({setNodeStateObj, tb, setTb, map, setMap}) {
 
   return (
     <>
-      <div ref={mapRef} className="w-screen h-screen" />
+        <div ref={mapRef}  className="w-screen h-screen" />
+
     </>
   );
 }
