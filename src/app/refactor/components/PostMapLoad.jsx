@@ -12,7 +12,7 @@ export const loadCustomLayerAndEventListeners = (
   setNodeStateObj
 ) => {
   map.on("style.load", async function () {
-    map.getContainer().appendChild(stats.dom);
+    // map.getContainer().appendChild(stats.dom);
 
     stats.dom.style.cssText = "";
     stats.dom.style.position = "fixed";

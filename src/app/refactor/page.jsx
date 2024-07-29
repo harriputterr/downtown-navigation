@@ -4,6 +4,7 @@ import { useState } from "react";
 import NodeEditSheet from "./components/NodeEditSheet.jsx";
 import CreateRelations from "./components/CreateRelations";
 import DeleteRelationSheet from "./components/DeleteRelationViaUUID";
+import ModelSettings from './components/ModelSettings'
 
 export default function page() {
   const [tb, setTb] = useState(null);
@@ -36,6 +37,8 @@ export default function page() {
           tb={tb}
         />
       )}
+
+      <ModelSettings />
 
       <DeleteRelationSheet />
  
