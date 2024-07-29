@@ -52,32 +52,6 @@
         "rotation": null
     },
     {
-        "id": "bow-valley-sqaure-plus15-floor",
-        "uuid": "bow-valley-sqaure-plus15-floor",
-        "name": "bow-valley-square",
-        "structureType": "Floor",
-        "origin": [
-            -114.06654788592415,
-            51.04804595856754,
-            0
-        ],
-        "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/bow-valley-square-plus15-floor.glb",
-        "rotation": null
-    },
-    {
-        "id": "bow-valley-sqaure",
-        "uuid": "",
-        "name": "bow-valley-square-main-floor",
-        "structureType": "Floor",
-        "origin": [
-            -114.06660560660066,
-          51.04804243504623,
-            0
-        ],
-        "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/bow-valley-square-main-floor.glb",
-        "rotation": null
-    },
-    {
         "id": "bow-valley-sqaure",
         "uuid": "",
         "name": "bow-valley-square",
@@ -88,6 +62,19 @@
             0
         ],
         "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/bow-valley-square.glb",
+        "rotation": null
+    },
+    {
+        "id": "bow-valley-sqaure-plus15-floor",
+        "uuid": "bow-valley-sqaure-plus15-floor",
+        "name": "bow-valley-square",
+        "structureType": "Floor",
+        "origin": [
+            -114.06763271037646,
+            51.04781137484912,
+            0
+        ],
+        "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/bow-valley-square-plus15-floor.glb",
         "rotation": null
     }
 ]

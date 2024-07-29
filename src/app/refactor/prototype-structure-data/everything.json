@@ -1,0 +1,15 @@
+[
+    {
+        "id": "Everything",
+        "uuid": "",
+        "name": "Everthing",
+        "structureType": "Building",
+        "origin": [
+            -114.06625133982124,
+            51.04795027143604,
+            0
+        ],
+        "url": "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/everything.glb",
+        "rotation": null
+    }
+]
