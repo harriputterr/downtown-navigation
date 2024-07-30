@@ -128,55 +128,64 @@ export function CheckboxReactHookFormMultiple({ map, tb }) {
                     render={() => (
                         <FormItem>
                             <div className="mb-4">
-                                <FormLabel className="text-base">
+                                <FormLabel className="font-semibold text-lg">
                                     Model Settings
                                 </FormLabel>
                                 <FormDescription>
                                     Select the model settings you want to have.
                                 </FormDescription>
-                                <ModelSelect setModelId={handleModelChange} />
                             </div>
 
-                            {modelId &&
-                                items.map((item) => (
-                                    <FormField
-                                        key={item.id}
-                                        control={form.control}
-                                        name="items"
-                                        render={({ field }) => {
-                                            return (
-                                                <FormItem
-                                                    key={item.id}
-                                                    className="flex flex-row items-start space-x-3 space-y-0">
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value?.includes(
-                                                                item.id
-                                                            )}
-                                                            onCheckedChange={(
-                                                                checked
-                                                            ) => {
-                                                                handleCheckboxChange(
-                                                                    checked,
-                                                                    item,
-                                                                    field
-                                                                );
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <FormLabel className="text-sm font-normal">
-                                                        {item.label}
-                                                    </FormLabel>
-                                                </FormItem>
-                                            );
-                                        }}
-                                    />
-                                ))}
+                            <ModelSelect setModelId={handleModelChange} />
+
+                            <div className="pt-2">
+                                {modelId &&
+                                    items.map((item) => (
+                                        <FormField
+                                            key={item.id}
+                                            control={form.control}
+                                            name="items"
+                                            render={({ field }) => {
+                                                return (
+                                                    <FormItem
+                                                        key={item.id}
+                                                        className="flex items-center gap-2 space-y-0">
+                                                        <FormControl
+                                                            id={item.id}>
+                                                            <Checkbox
+                                                                checked={field.value?.includes(
+                                                                    item.id
+                                                                )}
+                                                                onCheckedChange={(
+                                                                    checked
+                                                                ) => {
+                                                                    handleCheckboxChange(
+                                                                        checked,
+                                                                        item,
+                                                                        field
+                                                                    );
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                        <FormLabel
+                                                            htmlFor={item.id}
+                                                            className="text-sm font-normal">
+                                                            {item.label}
+                                                        </FormLabel>
+                                                    </FormItem>
+                                                );
+                                            }}
+                                        />
+                                    ))}
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button onClick={handleReset} variant={"destructive"}>
+                <Button
+                    type="button"
+                    onClick={handleReset}
+                    variant={"destructive"}>
                     Reset All
                 </Button>
             </form>
@@ -193,18 +202,7 @@ export default function BuildingSettings({ map, tb }) {
                 </Button>
             </SheetTrigger>
             <SheetContent>
-                <SheetHeader>
-                    <SheetTitle>Model Settings</SheetTitle>
-                    <SheetDescription></SheetDescription>
-                </SheetHeader>
-                <div>
-                    <CheckboxReactHookFormMultiple map={map} tb={tb} />
-                </div>
-                <SheetFooter>
-                    <SheetClose asChild>
-                        <Button type="submit">Save changes</Button>
-                    </SheetClose>
-                </SheetFooter>
+                <CheckboxReactHookFormMultiple map={map} tb={tb} />
             </SheetContent>
         </Sheet>
     );

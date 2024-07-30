@@ -10,41 +10,56 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import { data } from "@/app/refactor/prototype-structure-data/modelData";
+
 export default function ModelSelect({ setModelId }) {
     return (
         <Select
             onValueChange={(value) => {
                 setModelId(value);
             }}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
                 <SelectValue placeholder="Select a Model" />
             </SelectTrigger>
             <SelectContent>
-                <SelectGroup>
-                    <SelectLabel className="text-xl">All</SelectLabel>
+                <div className="pl-3">
                     <SelectItem value="all">Apply to all</SelectItem>
-                    <SelectLabel className="text-xl">
-                        Building Models
-                    </SelectLabel>
-                    <SelectItem value="sec">Suncor-Energy-Center</SelectItem>
-                    <SelectItem value="bvs">Bow-Valley-Square</SelectItem>
-                    <SelectItem value="tel-han">
-                        Telus-Sky-And-Hanover
-                    </SelectItem>
-                </SelectGroup>
+                </div>
+
                 <SelectGroup>
-                    <SelectLabel className="text-xl">
-                        Main Floor Models
-                    </SelectLabel>
-                    <SelectItem value="sec-m">Suncor-Main-Floor</SelectItem>
-                    <SelectItem value="bvs-m">BVS-Main-Floor</SelectItem>
+                    <SelectLabel>Building models</SelectLabel>
+
+                    <div className="pl-3">
+                        {data.buildings.map((building) => (
+                            <SelectItem value={building.id}>
+                                {building.name}
+                            </SelectItem>
+                        ))}
+                    </div>
                 </SelectGroup>
+
                 <SelectGroup>
-                    <SelectLabel className="text-xl">
-                        Plus 15 Models
-                    </SelectLabel>
-                    <SelectItem value="sec-p">Suncor-Plus15-Floor</SelectItem>
-                    <SelectItem value="bvs-p">BVS-Plus-15-Floor</SelectItem>
+                    <SelectLabel>Main Floor models</SelectLabel>
+
+                    <div className="pl-3">
+                        {data.mainFloors.map((floor) => (
+                            <SelectItem value={floor.id}>
+                                {floor.name}
+                            </SelectItem>
+                        ))}
+                    </div>
+                </SelectGroup>
+
+                <SelectGroup>
+                    <SelectLabel>plus15 models</SelectLabel>
+
+                    <div className="pl-3">
+                        {data.plus15Floors.map((floor) => (
+                            <SelectItem value={floor.id}>
+                                {floor.name}
+                            </SelectItem>
+                        ))}
+                    </div>
                 </SelectGroup>
             </SelectContent>
         </Select>

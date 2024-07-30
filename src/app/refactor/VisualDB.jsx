@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
-import modelData from "./prototype-structure-data/model-data.json";
+import { data } from "./prototype-structure-data/modelData";
 
 import { createMap } from "./components/MapboxMap.jsx";
 import { createThreeboxInstance } from "./components/Threebox.jsx";
@@ -54,7 +54,7 @@ export default function VisualDB({ setNodeStateObj, tb, setTb, map, setMap }) {
                 animate,
                 createCustomLayer,
                 addDataNode,
-                modelData,
+                [...data.buildings, ...data.mainFloors, ...data.plus15Floors],
                 setPickables,
                 setNodeStateObj
             );
