@@ -19,12 +19,13 @@ export const createCustomLayer = (layerName, tb, modelData, setPickables) => {
 
             tb.loadObj(options, function (model) {
               model.setCoords(modelData.origin);
-              // model.addTooltip(modelData.name);
+              model.addTooltip(modelData.name);
               model.traverse((child) => {
                 if (child.isMesh && child.material){
                   child.nameId = modelData.id
                 }
               })
+
               model.modelId = modelData.id
               model.addEventListener("SelectedChange", (e) => {console.log(e)})
 
