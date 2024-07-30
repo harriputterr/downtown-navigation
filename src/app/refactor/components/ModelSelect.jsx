@@ -31,7 +31,7 @@ export default function ModelSelect({ setModelId }) {
 
                     <div className="pl-3">
                         {data.buildings.map((building) => (
-                            <SelectItem value={building.id}>
+                            <SelectItem key={building.id} value={building.id}>
                                 {building.name}
                             </SelectItem>
                         ))}
@@ -43,7 +43,7 @@ export default function ModelSelect({ setModelId }) {
 
                     <div className="pl-3">
                         {data.mainFloors.map((floor) => (
-                            <SelectItem value={floor.id}>
+                            <SelectItem key={floor.id} value={floor.id}>
                                 {floor.name}
                             </SelectItem>
                         ))}
@@ -55,7 +55,7 @@ export default function ModelSelect({ setModelId }) {
 
                     <div className="pl-3">
                         {data.plus15Floors.map((floor) => (
-                            <SelectItem value={floor.id}>
+                            <SelectItem key={floor.id} value={floor.id}>
                                 {floor.name}
                             </SelectItem>
                         ))}

@@ -121,21 +121,12 @@ export function CheckboxReactHookFormMultiple({ map, tb }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
                     name="items"
                     render={() => (
                         <FormItem>
-                            <div className="mb-4">
-                                <FormLabel className="font-semibold text-lg">
-                                    Model Settings
-                                </FormLabel>
-                                <FormDescription>
-                                    Select the model settings you want to have.
-                                </FormDescription>
-                            </div>
-
                             <ModelSelect setModelId={handleModelChange} />
 
                             <div className="pt-2">
@@ -202,6 +193,12 @@ export default function BuildingSettings({ map, tb }) {
                 </Button>
             </SheetTrigger>
             <SheetContent>
+                <SheetHeader>
+                    <SheetTitle>Model Settings</SheetTitle>
+                    <SheetDescription>
+                        Select the model settings you want to have.
+                    </SheetDescription>
+                </SheetHeader>
                 <CheckboxReactHookFormMultiple map={map} tb={tb} />
             </SheetContent>
         </Sheet>
