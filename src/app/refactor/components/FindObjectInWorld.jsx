@@ -1,16 +1,16 @@
 import React from "react";
 
 export function findObjectInWorld(uuid) {
-  let foundNode = null;
+  let model = null;
 
   tb.world.children.forEach((object) => {
     object.traverse((child) => {
       if (child.uuid === uuid) {
-        foundNode = child;
+        model = child;
         
       }
     });
   });
 
-  return foundNode;
+  return model;
 }

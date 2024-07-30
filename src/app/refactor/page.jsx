@@ -6,6 +6,7 @@ import CreateRelations from "./components/CreateRelations";
 import DeleteRelationSheet from "./components/DeleteRelationViaUUID";
 import ModelSettings from './components/ModelSettings'
 
+
 export default function page() {
   const [tb, setTb] = useState(null);
   const [map, setMap] = useState(null);
@@ -38,11 +39,10 @@ export default function page() {
         />
       )}
 
-      <ModelSettings />
+      <ModelSettings map={map} tb={tb}/>
 
       <DeleteRelationSheet />
- 
-
+      
       <CreateRelations
         className={"absolute top-0 right-0 border border-gray-300 shadow-lg"}
         nodeStateObj={nodeStateObj}

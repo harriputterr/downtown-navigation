@@ -45,7 +45,7 @@ export const recreateLines = (map, tb, relationships) => {
     const options = {
       geometry: lineGeometry,
       width: 5,
-      color: 'red',
+      color: 'black',
     };
 
     const midpoint = [
@@ -58,17 +58,17 @@ export const recreateLines = (map, tb, relationships) => {
     line.uuid = lineUUID;  // Set the UUID from the database
     tb.add(line);
 
-    const tooltipElement = document.createElement('div');
-    tooltipElement.className = 'tooltip';
-    tooltipElement.innerHTML = `<p>${line.uuid}</p>`;
+    // const tooltipElement = document.createElement('div');
+    // tooltipElement.className = 'tooltip';
+    // tooltipElement.innerHTML = `<p>${line.uuid}</p>`;
 
-    const tooltipOptions = {
-      htmlElement: tooltipElement,
-      alwaysVisible: true,
-    };
+    // const tooltipOptions = {
+    //   htmlElement: tooltipElement,
+    //   alwaysVisible: true,
+    // };
 
-    const tooltip = tb.label(tooltipOptions).setCoords(midpoint);
-    tb.add(tooltip);
+    // const tooltip = tb.label(tooltipOptions).setCoords(midpoint);
+    // tb.add(tooltip);
   });
 
   map.repaint = true;
@@ -109,7 +109,7 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
     const options = {
       geometry: lineGeometry,
       width: 5,
-      color: "red"
+      color: "black"
     }
 
     const midpoint = [
@@ -126,23 +126,23 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
     map.repaint = true;
     tb.update()
 
-    const tooltipElement = document.createElement('div');
-    tooltipElement.className = 'tooltip';
-    tooltipElement.innerHTML = `
-      <p>${line.uuid}</p>
-    `;
+    // const tooltipElement = document.createElement('div');
+    // tooltipElement.className = 'tooltip';
+    // tooltipElement.innerHTML = `
+    //   <p>${line.uuid}</p>
+    // `;
 
 
-    // Create a tooltip
-    const tooltipOptions = {
-      htmlElement: tooltipElement,
-      alwaysVisible: true,
-      // cssClass: "tooltip"
-    };
+    // // Create a tooltip
+    // const tooltipOptions = {
+    //   htmlElement: tooltipElement,
+    //   alwaysVisible: true,
+    //   // cssClass: "tooltip"
+    // };
 
-    const tooltip = tb.label(tooltipOptions).setCoords(midpoint);
-    console.log(tooltip)
-    tb.add(tooltip);
+    // const tooltip = tb.label(tooltipOptions).setCoords(midpoint);
+    // console.log(tooltip)
+    // tb.add(tooltip);
 
 
     const nodeAUUID = nodeStateObj.nodeA.uuid;
