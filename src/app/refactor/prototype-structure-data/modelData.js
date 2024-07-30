@@ -54,7 +54,7 @@ export const mainFloors = [
         uuid: "",
         name: "bow-valley-square-main-floor",
         structureType: "main-floor",
-        origin: [-114.06660560660066, 51.04804243504623, 0],
+        origin: [-114.06660560660066, 51.04804243504623, 10],
         url: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/bow-valley-square-main-floor.glb",
         rotation: null,
     },
