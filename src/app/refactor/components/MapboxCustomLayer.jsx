@@ -25,7 +25,7 @@ export const createCustomLayer = (layerName, tb, modelData, setPickables) => {
                   child.nameId = modelData.id
                 }
               })
-              model.nameId = modelData.id
+              model.modelId = modelData.id
               model.addEventListener("SelectedChange", (e) => {console.log(e)})
 
               tb.add(model);

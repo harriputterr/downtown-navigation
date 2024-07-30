@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { queryDB } from "./QueryDB";
 import {deleteDataNode} from './DataNodeCRUD'
-import {findObjectInWorld} from './FindObjectInWorld';
+import {findObjectInWorldViaUUID} from './FindObjectInWorld';
 
 export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
   const selectedNode = nodeStateObj.selectedNode;
@@ -52,7 +52,7 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
     });
 
 
-    let foundNode = findObjectInWorld(uuid);
+    let foundNode = findObjectInWorldViaUUID(uuid, tb);
 
     await foundNode.setCoords([x, y, z]);
 
@@ -67,7 +67,7 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
     deleteDataNode(deleteNodeUUID);
 
     // Removes the data node from the map.Specifically through the world array.
-    const sphere = findObjectInWorld(deleteNodeUUID)
+    const sphere = findObjectInWorldViaUUID(deleteNodeUUID, tb)
     tb.remove(sphere);
 
     tb.update();

@@ -14,8 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { queryDB } from "./QueryDB";
-import { deleteDataNode } from "./DataNodeCRUD";
-import { findObjectInWorld } from "./FindObjectInWorld";
+
 
 export default function DeleteRelationSheet({className}) {
 

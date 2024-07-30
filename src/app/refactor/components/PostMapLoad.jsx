@@ -33,7 +33,7 @@ export const loadCustomLayerAndEventListeners = (
    
 
     map.on("click", (event) => {
-
+      console.log(tb.world.children)
       
       
       let intersects = tb.queryRenderedFeatures(event.point);
