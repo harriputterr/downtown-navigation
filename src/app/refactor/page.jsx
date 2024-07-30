@@ -51,6 +51,15 @@ export default function page() {
                     )}
                 </nav>
 
+                {nodeStateObj.selectedNode && (
+                    <NodeEditSheet
+                        className={"ml-auto md:hidden fixed top-3 left-3 z-50"}
+                        nodeStateObj={nodeStateObj}
+                        map={map}
+                        tb={tb}
+                    />
+                )}
+
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button
@@ -73,14 +82,6 @@ export default function page() {
                                 tb={tb}
                                 map={map}
                             />
-                            {nodeStateObj.selectedNode && (
-                                <NodeEditSheet
-                                    className={"ml-auto"}
-                                    nodeStateObj={nodeStateObj}
-                                    map={map}
-                                    tb={tb}
-                                />
-                            )}
                         </nav>
                     </SheetContent>
                 </Sheet>
