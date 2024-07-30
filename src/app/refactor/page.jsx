@@ -60,6 +60,14 @@ export default function page() {
                     />
                 )}
 
+                <div className="fixed bottom-3 right-3 z-50 md:hidden">
+                    <CreateRelations
+                        nodeStateObj={nodeStateObj}
+                        tb={tb}
+                        map={map}
+                    />
+                </div>
+
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button
@@ -77,11 +85,6 @@ export default function page() {
                         <nav className=" flex flex-col gap-5 py-2 ">
                             <DeleteRelationSheet />
                             <ModelSettings map={map} tb={tb} />
-                            <CreateRelations
-                                nodeStateObj={nodeStateObj}
-                                tb={tb}
-                                map={map}
-                            />
                         </nav>
                     </SheetContent>
                 </Sheet>
