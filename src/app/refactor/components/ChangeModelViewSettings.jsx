@@ -6,12 +6,13 @@ export default function ChangeModelViewSettings(
   map,
   tb
 ) {
-  const model = findObjectInWorldViaModelId(activeModelId, tb)
-  console.log(model)
   
-  model.traverse(child => {
-    if (child.isMesh){
+  const model = findObjectInWorldViaModelId(activeModelId, tb)
+  if (model){
+    model.traverse((child) => {
+      if (child.isMesh && child.material){
         console.log(child)
-    }
-  } )
+      }
+    })
+  }
 }

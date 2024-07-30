@@ -86,12 +86,13 @@ export default function model() {
               const origin = [-114.06399405236901, 51.04800708837064, 4.9];
               model.setCoords(origin);
               tb.add(model);
-
+              console.log(model)
               model.traverse((child) => {
                 if (child.isMesh && child.material) {
                   child.material.format = THREE.RGBAFormat;
                   child.material.transparent = true;
                   child.material.opacity = 0.1;
+                  console.log(child)
                 }
               });
               pickables.push(model);

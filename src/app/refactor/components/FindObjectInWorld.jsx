@@ -19,12 +19,14 @@ export function findObjectInWorldViaModelId(modelId, tb) {
   let model = null;
 
   tb.world.children.forEach((object) => {
-    object.traverse((child) => {
-      if (child.modelId === modelId) {
-        model = child;
-        
-      }
-    });
+    if (object.traverse) {
+      object.traverse((child) => {
+        // console.log(child)
+        if (child.modelId === modelId) {
+          model = child;
+        }
+      });
+    }
   });
 
   return model;
