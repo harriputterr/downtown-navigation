@@ -1,39 +1,39 @@
-"use client";
-import { useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
+"use client"
+import React, { useRef, useEffect } from 'react'
+import mapboxgl from 'mapbox-gl'
 
-// Ensure the access token is set
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 
-export default function page() {
-  const mapRef = useRef(null);
+export default function Page() {
+  const mapboxRef = useRef(null);
 
   useEffect(() => {
-    if (mapRef.current) {
+    if (mapboxRef.current) {
       const map = new mapboxgl.Map({
-        container: mapRef.current,
-        style: "mapbox://styles/mapbox/dark-v11",
+        container: mapboxRef.current,
+        style: "mapbox://styles/mapbox/light-v9",
         center: [-114.063775, 51.0475053],
         zoom: 16,
         antialias: true,
       });
 
-      // Debugging statements
-      console.log("Mapbox GL JS version:", mapboxgl.version);
-      console.log("Map instance:", map);
-      console.log("Map style:");
+      const geolocate = new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true,
+          },
+          trackUserLocation: true,
+        //   showUserHeading: true,
+    });
 
-      map.on('style.load', () => {
-        console.log('Style loaded:');
-      });
+    map.addControl(geolocate);
 
-      map.on('error', (e) => {
-        console.error('Map error:', e.error);
-      });
-
-      return () => map.remove();
+      return () => {
+        map.remove(); // Clean up on unmount
+      };
     }
-  }, []);
+  }, []); // Empty dependency array ensures this effect runs only once
 
-  return <div ref={mapRef} className="w-screen h-screen" />;
+  return (
+    <div ref={mapboxRef} className='w-screen h-screen'></div>
+  )
 }
