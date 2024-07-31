@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 export default function page() {
     const [tb, setTb] = useState(null);
     const [map, setMap] = useState(null);
+    const [modelSettings, setModelSettings] = useState([]);
     const [nodeStateObj, setNodeStateObj] = useState({
         counter: 0,
         nodeA: null,
@@ -35,7 +36,7 @@ export default function page() {
             <div>
                 <nav className=" gap-5  fixed py-2 container  bg-black/50 top-0 inset-x-0 z-50 hidden md:flex">
                     <DeleteRelationSheet />
-                    <ModelSettings map={map} tb={tb} />
+                    <ModelSettings map={map} tb={tb} setModelSettings={setModelSettings} modelSettings={modelSettings} />
                     <CreateRelations
                         nodeStateObj={nodeStateObj}
                         tb={tb}

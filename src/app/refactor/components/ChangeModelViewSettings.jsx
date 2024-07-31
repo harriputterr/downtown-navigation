@@ -1,5 +1,5 @@
 import { findObjectInWorldViaModelId } from "./FindObjectInWorld";
-import * as THREE from 'three'
+import * as THREE from "three";
 
 export default function ChangeModelViewSettings(
   activeModelId,
@@ -10,27 +10,47 @@ export default function ChangeModelViewSettings(
   const model = findObjectInWorldViaModelId(activeModelId, tb);
 
   if (model && allModelSettings.length > 0) {
-    console.log(allModelSettings)
+    console.log("This is the all model settings", allModelSettings);
 
     const activeModelSettingsObj = allModelSettings.find((value) => {
       return value.modelId == activeModelId;
     });
 
+    console.log(
+      "This is the active Model Settings OBJ",
+      activeModelSettingsObj
+    );
+
     model.traverse((child) => {
-      if (child.isMesh && child.material) {
-        if (activeModelSettingsObj.settings.includes("min-opacity")){
+      if (child.isMesh && child.material && activeModelSettingsObj) {
+
+        if (activeModelSettingsObj.settings.includes("min-opacity")) {
           child.material.format = THREE.RGBAFormat;
           child.material.transparent = true;
           child.material.opacity = 0.2;
+        } else {
+          child.material.transparent = false;
+          child.material.opacity = 1;
         }
-        if (activeModelSettingsObj.settings.includes("wireframe")){
+
+        if (activeModelSettingsObj.settings.includes("wireframe")) {
           child.material.wireframe = true;
+        } else {
+          child.material.wireframe = false;
         }
-        if (activeModelSettingsObj.settings.includes("raycasting")){
-          child.raycasted = false;
+
+        if (activeModelSettingsObj.settings.includes("raycasting-off")) {
+          model.raycasted = false;
+        } else {
+          model.raycasted = true;
         }
-        // if(activeModelSettingsObj.settings.includes("visible"))
-        tb.update()
+
+        if (activeModelSettingsObj.settings.includes("visibility-off")) {
+          model.visibility = false;
+        } else {
+          model.visibility = true;
+        }
+        tb.update();
         map.repaint = true;
       }
     });

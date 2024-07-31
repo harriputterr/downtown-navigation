@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChangeModelViewSettings from "./ChangeModelViewSettings";
 import {
     Form,
@@ -36,31 +36,34 @@ const items = [
         label: "Wireframe",
     },
     {
-        id: "raycasting",
-        label: "raycasting",
+        id: "raycasting-off",
+        label: "raycasting-off",
     },
     {
         id: "min-opacity",
         label: "min-opacity",
     },
     {
-        id: "visibile",
-        label: "visible",
+        id: "visibility-off",
+        label: "visibility-off",
     },
 ];
 
 import ModelSelect from "./ModelSelect";
 
-export function CheckboxReactHookFormMultiple({ map, tb }) {
+export function CheckboxReactHookFormMultiple({ map, tb, modelSettings, setModelSettings }) {
     const [modelId, setModelId] = useState("");
-    const [modelSettings, setModelSettings] = useState([]);
+    
     const form = useForm({
         defaultValues: {
             items: [],
         },
     });
-    ChangeModelViewSettings(modelId, modelSettings, map, tb);
+    useEffect(() => {
+        ChangeModelViewSettings(modelId, modelSettings, map, tb);
+    }, [modelSettings])
 
+    // Currently, not using this onSubmit function because we haven't added a button for submitting. 
     function onSubmit(data) {
         toast({
             title: "Selected Configuration",
@@ -184,7 +187,7 @@ export function CheckboxReactHookFormMultiple({ map, tb }) {
     );
 }
 
-export default function BuildingSettings({ map, tb }) {
+export default function BuildingSettings({ map, tb, setModelSettings, modelSettings }) {
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -199,7 +202,7 @@ export default function BuildingSettings({ map, tb }) {
                         Select the model settings you want to have.
                     </SheetDescription>
                 </SheetHeader>
-                <CheckboxReactHookFormMultiple map={map} tb={tb} />
+                <CheckboxReactHookFormMultiple map={map} tb={tb} setModelSettings={setModelSettings} modelSettings={modelSettings} />
             </SheetContent>
         </Sheet>
     );

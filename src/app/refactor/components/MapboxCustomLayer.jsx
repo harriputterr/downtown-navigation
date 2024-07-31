@@ -46,7 +46,7 @@ export const createCustomLayer = (layerName, tb, modelData, setPickables) => {
                 anchor: "center",
               })
               .setCoords(origin);
-
+              sphere.removeLabel();
             tb.add(sphere);
           };
           modelData.map((element) => {
