@@ -23,9 +23,10 @@ export const createCustomLayer = (layerName, tb, modelData, setPickables) => {
               model.traverse((child) => {
                 if (child.isMesh && child.material){
                   child.nameId = modelData.id
+                  child.material.color = modelData.color ? modelData.color : {b: 0.231, g:0.231 , r: 0.231}
                 }
               })
-
+              
               model.modelId = modelData.id
               model.addEventListener("SelectedChange", (e) => {console.log(e)})
 
@@ -33,7 +34,7 @@ export const createCustomLayer = (layerName, tb, modelData, setPickables) => {
               setPickables((prev) => [...prev, model]);
             });
 
-            highlightOrigin(modelData.origin);
+            // highlightOrigin(modelData.origin); -----> Use this to highlight origin
           };
           
           const highlightOrigin = (origin) => {

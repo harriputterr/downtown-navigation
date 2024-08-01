@@ -1,6 +1,7 @@
 "use client"
 import React, { useRef, useEffect } from 'react'
 import mapboxgl from 'mapbox-gl'
+import Algolia from './AlgoliaFinal'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 
@@ -22,7 +23,8 @@ export default function Page() {
             enableHighAccuracy: true,
           },
           trackUserLocation: true,
-        //   showUserHeading: true,
+          showUserHeading: true,
+          showAccuracyCircle: false
     });
 
     map.addControl(geolocate);
@@ -34,6 +36,8 @@ export default function Page() {
   }, []); // Empty dependency array ensures this effect runs only once
 
   return (
+
+    // <Algolia />
     <div ref={mapboxRef} className='w-screen h-screen'></div>
   )
 }
