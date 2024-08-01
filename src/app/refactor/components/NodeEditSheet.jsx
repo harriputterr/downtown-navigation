@@ -24,12 +24,14 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [z, setZ] = useState(0);
+    const [name, setName] = useState("");
 
     useEffect(() => {
         if (selectedNode) {
             setX(selectedNode.point.x);
             setY(selectedNode.point.y);
             setZ(selectedNode.point.z);
+            setName(selectedNode.name);
         } else {
             setX(0);
             setY(0);
@@ -78,10 +80,11 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
         const query = `
     MATCH (n: Node {uuid: $uuid})
     SET n.point = point({x: $x, y: $y, z: $z})
+    SET n.name = $name
     RETURN n;
     `;
         const uuid = selectedNode.uuid;
-        const params = { uuid, x, y, z };
+        const params = { uuid, x, y, z, name };
 
         const result = await queryDB({
             query: query,
@@ -124,6 +127,21 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
                     </SheetDescription>
                 </SheetHeader>
                 <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                            Name
+                        </Label>
+                        <Input
+                            type="text"
+                            id="name"
+                            value={name}
+                            className="col-span-3"
+                            onChange={(event) => {
+                                setName(event.target.value);
+                            }}
+                        />
+                    </div>
+
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="longitude" className="text-right">
                             Longitude | x
