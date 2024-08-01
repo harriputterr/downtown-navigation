@@ -7,23 +7,23 @@ export default function ChangeModelViewSettings(
   map,
   tb
 ) {
+  
+
   const model = findObjectInWorldViaModelId(activeModelId, tb);
 
   if (model && allModelSettings.length > 0) {
-    console.log("This is the all model settings", allModelSettings);
+
 
     const activeModelSettingsObj = allModelSettings.find((value) => {
       return value.modelId == activeModelId;
     });
 
-    console.log(
-      "This is the active Model Settings OBJ",
-      activeModelSettingsObj
-    );
+
 
     model.traverse((child) => {
+     
       if (child.isMesh && child.material && activeModelSettingsObj) {
-
+        
         if (activeModelSettingsObj.settings.includes("min-opacity")) {
           child.material.format = THREE.RGBAFormat;
           child.material.transparent = true;
