@@ -44,6 +44,15 @@ export default function page() {
                         tb={tb}
                         map={map}
                     />
+                    <SwitchCameraView tb={tb} onClick={() => {
+                               if (cameraViewType === "orthographic"){
+                                tb.orthographic = false
+                                setCameraViewType("perspective")
+                               }else{
+                                tb.orthographic = true
+                                setCameraViewType("orthographic")
+                               }
+                            }}>Switch to {cameraViewType === "orthographic" ? "perspective" : "orthographic"}</SwitchCameraView>
                     {nodeStateObj.selectedNode && (
                         <NodeEditSheet
                             className={"ml-auto"}
@@ -88,9 +97,9 @@ export default function page() {
                         <nav className=" flex flex-col gap-5 py-2 ">
                             <DeleteRelationSheet />
                             <ModelSettings map={map} tb={tb} />
-                            {/* <SwitchCameraView tb={tb} onClick={() => {
+                            <SwitchCameraView tb={tb} onClick={() => {
                                 console.log("Camera view clicked!")
-                            }}>Switch to {cameraViewType === "orthographic" ? "perspective" : "orthographic"}</SwitchCameraView> */}
+                            }}>Switch to {cameraViewType === "orthographic" ? "perspective" : "orthographic"}</SwitchCameraView>
                         </nav>
                     </SheetContent>
                 </Sheet>

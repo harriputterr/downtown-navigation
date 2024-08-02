@@ -10,24 +10,30 @@ import ImageDisplay from "./components/ImageDisplay";
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 export default function Page() {
-    const mapboxRef = useRef(null);
-    const [nodes, setNodes] = useState([]);
-    const [from, setFrom] = useState(null);
-    const [to, setTo] = useState(null);
+  const mapboxRef = useRef(null);
+  const [nodes, setNodes] = useState([]);
+  const [from, setFrom] = useState(null);
+  const [to, setTo] = useState(null);
 
-    useEffect(() => {
+  useEffect(() => {
+    if (from && to){
+        console.log("From and To are now selected.")
+    }
+  }, [from, to])
+  
+  useEffect(() => {
         getAllNodes().then((res) => {
             const data = res.data.map((ele) => ele.n.properties);
             setNodes(data);
         });
-        if (mapboxRef.current) {
-            const map = new mapboxgl.Map({
-                container: mapboxRef.current,
-                style: "mapbox://styles/mapbox/light-v9",
-                center: [-114.063775, 51.0475053],
-                zoom: 16,
-                antialias: true,
-            });
+    if (mapboxRef.current) {
+      const map = new mapboxgl.Map({
+        container: mapboxRef.current,
+        style: "mapbox://styles/mapbox/light-v9",
+        center: [-114.063775, 51.0475053],
+        zoom: 16,
+        antialias: true,
+      });
 
             const geolocate = new mapboxgl.GeolocateControl({
                 positionOptions: {
@@ -38,13 +44,13 @@ export default function Page() {
                 //   showUserHeading: true,
             });
 
-            map.addControl(geolocate);
+      map.addControl(geolocate);
 
-            return () => {
-                map.remove(); // Clean up on unmount
-            };
-        }
-    }, []); // Empty dependency array ensures this effect runs only once
+      return () => {
+        map.remove(); // Clean up on unmount
+      };
+    }
+  }, []); // Empty dependency array ensures this effect runs only once
 
     return (
         <div className="w-96 h-96">
