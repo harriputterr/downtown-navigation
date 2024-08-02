@@ -12,6 +12,9 @@ export default function ImageDisplay() {
     const [images, setImages] = useState([]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+    let sphere = null;
+
+
     const loadAndRenderImage = (index) => {
         const loader = new THREE.TextureLoader();
         console.log(images[index]);
@@ -37,7 +40,7 @@ export default function ImageDisplay() {
     const handleNextImage = () => {
         setCurrentImageIndex((prev) => {
             if (prev < images.length - 1) {
-                loadAndRenderImage(prev + 1);
+
                 return prev + 1;
             }
             return prev;
@@ -47,7 +50,6 @@ export default function ImageDisplay() {
     const handlePrevImage = () => {
         setCurrentImageIndex((prev) => {
             if (prev > 0) {
-                loadAndRenderImage(prev - 1);
                 return prev - 1;
             }
             return prev;
