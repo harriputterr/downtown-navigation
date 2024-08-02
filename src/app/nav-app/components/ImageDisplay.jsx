@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-export default function ImageDisplay() {
+export default function ImageDisplay({ from, to }) {
     const sceneRef = useRef();
     const rendererRef = useRef();
     const cameraRef = useRef();
@@ -13,7 +13,6 @@ export default function ImageDisplay() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     let sphere = null;
-
 
     const loadAndRenderImage = (index) => {
         const loader = new THREE.TextureLoader();
@@ -40,7 +39,6 @@ export default function ImageDisplay() {
     const handleNextImage = () => {
         setCurrentImageIndex((prev) => {
             if (prev < images.length - 1) {
-
                 return prev + 1;
             }
             return prev;
@@ -58,12 +56,16 @@ export default function ImageDisplay() {
 
     async function getShortestPathImageUrls() {
         const query = `
-      MATCH (startNode:Node {name: "start"}), (endNode:Node {name: "stop"})
+      MATCH (startNode:Node {name: $start}), (endNode:Node {name: $stop})
       MATCH path = shortestPath((startNode)-[*]-(endNode))
       RETURN nodes(path) AS pathNodes;
     `;
 
-        const result = await queryDB({ query, type: "read" });
+        const result = await queryDB({
+            query,
+            type: "read",
+            params: { start: from, stop: to },
+        });
 
         if (result.data.length === 0) {
             console.log("No data found");

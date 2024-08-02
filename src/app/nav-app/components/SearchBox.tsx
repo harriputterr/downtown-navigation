@@ -57,29 +57,32 @@ export function SearchBox({
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup>
-                                {elements.map((ele) => (
-                                    <CommandItem
-                                        key={ele.name}
-                                        value={ele.name}
-                                        onSelect={(currentValue) => {
-                                            setValue(
-                                                currentValue === value
-                                                    ? ""
-                                                    : currentValue
-                                            );
-                                            setOpen(false);
-                                        }}>
-                                        {ele.name}
-                                        <CheckIcon
-                                            className={cn(
-                                                "ml-auto h-4 w-4",
-                                                value === ele.name
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                            )}
-                                        />
-                                    </CommandItem>
-                                ))}
+                                {elements.map(
+                                    (ele) =>
+                                        ele.name !== "" && (
+                                            <CommandItem
+                                                key={ele.uuid}
+                                                value={ele.name}
+                                                onSelect={(currentValue) => {
+                                                    setValue(
+                                                        currentValue === value
+                                                            ? ""
+                                                            : currentValue
+                                                    );
+                                                    setOpen(false);
+                                                }}>
+                                                {ele.name}
+                                                <CheckIcon
+                                                    className={cn(
+                                                        "ml-auto h-4 w-4",
+                                                        value === ele.name
+                                                            ? "opacity-100"
+                                                            : "opacity-0"
+                                                    )}
+                                                />
+                                            </CommandItem>
+                                        )
+                                )}
                             </CommandGroup>
                         </CommandList>
                     </Command>
