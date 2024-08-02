@@ -51,7 +51,7 @@ export const addDataNode = async (
     CREATE (n:Node {
         uuid: $uuid,
         point: point({x: $x, y: $y, z: $z}),
-        name: "default-name"
+        name: ""
       }) 
     RETURN n;`;
         const params = { uuid: sphere.uuid, x, y, z };
