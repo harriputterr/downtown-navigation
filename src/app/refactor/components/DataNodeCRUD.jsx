@@ -8,9 +8,9 @@ export const addDataNode = async (
     const [x, y, z] = coords;
     const sphere = tb
         .sphere({
-            radius: 1,
+            radius: 0.3,
             units: "meters",
-            color: "green",
+            color: "red",
             material: "MeshToonMaterial",
             anchor: "center",
         })

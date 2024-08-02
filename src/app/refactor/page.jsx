@@ -5,6 +5,7 @@ import NodeEditSheet from "./components/NodeEditSheet.jsx";
 import CreateRelations from "./components/CreateRelations";
 import DeleteRelationSheet from "./components/DeleteRelationViaUUID";
 import ModelSettings from "./components/ModelSettings";
+import SwitchCameraView from './components/SwitchCameraView'
 
 import {
     Sheet,
@@ -22,6 +23,7 @@ export default function page() {
     const [tb, setTb] = useState(null);
     const [map, setMap] = useState(null);
     const [modelSettings, setModelSettings] = useState([]);
+    const [cameraViewType, setCameraViewType] = useState('orthographic');
     const [nodeStateObj, setNodeStateObj] = useState({
         counter: 0,
         nodeA: null,
@@ -86,6 +88,9 @@ export default function page() {
                         <nav className=" flex flex-col gap-5 py-2 ">
                             <DeleteRelationSheet />
                             <ModelSettings map={map} tb={tb} />
+                            {/* <SwitchCameraView tb={tb} onClick={() => {
+                                console.log("Camera view clicked!")
+                            }}>Switch to {cameraViewType === "orthographic" ? "perspective" : "orthographic"}</SwitchCameraView> */}
                         </nav>
                     </SheetContent>
                 </Sheet>

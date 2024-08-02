@@ -5,10 +5,17 @@
 
 /* globals.css */
 
-.tooltip {
-  @apply bg-black bg-opacity-75 text-white p-2 rounded text-xs flex flex-col items-center;
+.arrow {
+  position: absolute;
+  top: 50%;
+  font-size: 5rem;
+  color: black;
+  cursor: pointer;
+  user-select: none;
 }
-
-.tooltip-button {
-  @apply mt-1 px-2 py-1 text-xs bg-blue-500 text-white rounded cursor-pointer;
+#leftArrow {
+  left: 10px;
+}
+#rightArrow {
+  right: 10px;
 }

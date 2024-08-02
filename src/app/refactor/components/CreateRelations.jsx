@@ -28,13 +28,13 @@ export const recreateLines = (map, tb, relationships) => {
     const nodeAPointGeometry = [
       nodeA.point.x,
       nodeA.point.y,
-      nodeA.point.z,
+      nodeA.point.z + 0.3,
     ];
 
     const nodeBPointGeometry = [
       nodeB.point.x,
       nodeB.point.y,
-      nodeB.point.z,
+      nodeB.point.z + 0.3,
     ];
 
     const lineGeometry = [
@@ -88,7 +88,7 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
     const nodeAPointGeometry = [
       nodeStateObj.nodeA.point.x,
       nodeStateObj.nodeA.point.y,
-      nodeStateObj.nodeA.point.z,
+      nodeStateObj.nodeA.point.z + 0.3,
     ];
 
     console.log(nodeAPointGeometry)
@@ -96,7 +96,7 @@ export default function CreateRelations({ nodeStateObj, className, tb, map }) {
     const nodeBPointGeometry = [
       nodeStateObj.nodeB.point.x,
       nodeStateObj.nodeB.point.y,
-      nodeStateObj.nodeB.point.z,
+      nodeStateObj.nodeB.point.z + 0.3,
     ];
 
     console.log(nodeBPointGeometry)

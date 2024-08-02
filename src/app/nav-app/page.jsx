@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SearchBox } from "./components/SearchBox";
 import { getAllNodes } from "@/utils/nodeUtils";
+import ImageDisplay from "./components/ImageDisplay";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
@@ -47,8 +48,8 @@ export default function Page() {
     }, []); // Empty dependency array ensures this effect runs only once
 
     return (
-        <div>
-            <div ref={mapboxRef} className="w-screen h-screen"></div>;
+        <div className="w-96 h-96">
+            {/* <div ref={mapboxRef} className="w-screen h-screen"></div>;
             <div className="flex flex-col gap-2 absolute top-5 right-5 min-w-[15rem]">
                 <SearchBox
                     placeholder="From"
@@ -64,7 +65,8 @@ export default function Page() {
                         setTo(val);
                     }}
                 />
-            </div>
+            </div> */}
+             <ImageDisplay />
         </div>
     );
 }
