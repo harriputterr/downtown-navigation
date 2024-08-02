@@ -49,24 +49,7 @@ export default function Page() {
 
     return (
         <div className="w-96 h-96">
-            {/* <div ref={mapboxRef} className="w-screen h-screen"></div>;
-            <div className="flex flex-col gap-2 absolute top-5 right-5 min-w-[15rem]">
-                <SearchBox
-                    placeholder="From"
-                    elements={nodes}
-                    onSelectChange={(val) => {
-                        setFrom(val);
-                    }}
-                />
-                <SearchBox
-                    placeholder="To"
-                    elements={nodes}
-                    onSelectChange={(val) => {
-                        setTo(val);
-                    }}
-                />
-            </div> */}
-             <ImageDisplay />
+            <ImageDisplay />
         </div>
     );
 }
