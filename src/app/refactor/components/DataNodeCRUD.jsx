@@ -1,5 +1,6 @@
 import { queryDB } from "./QueryDB";
 import { getNodeByUUID } from "./GetNode";
+import { deleteObject } from "@/utils/awsUtils";
 
 export const addDataNode = async (
     { tb, coords, map, uuid, addToDb = false },
@@ -77,7 +78,14 @@ export async function deleteDataNode(uuid) {
 
     try {
         const result = await queryDB({ query, type: "write", params });
-        return { success: true, message: "Node deleted successfully", result };
+        const awsRes = await deleteObject(uuid);
+
+        console.log(awsRes);
+        return {
+            success: true,
+            message: "Node deleted successfully" + " " + awsRes.message,
+            result,
+        };
     } catch (error) {
         console.error("Error deleting node:", error);
         return { success: false, message: "Error deleting node", error };

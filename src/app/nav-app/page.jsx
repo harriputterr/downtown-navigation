@@ -58,6 +58,7 @@ export default function Page() {
                     placeholder="From"
                     elements={nodes}
                     onSelectChange={(val) => {
+                        console.log("val change");
                         setFrom(val);
                     }}
                 />

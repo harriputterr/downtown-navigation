@@ -64,11 +64,7 @@ export function SearchBox({
                                                 key={ele.uuid}
                                                 value={ele.name}
                                                 onSelect={(currentValue) => {
-                                                    setValue(
-                                                        currentValue === value
-                                                            ? ""
-                                                            : currentValue
-                                                    );
+                                                    setValue(currentValue);
                                                     setOpen(false);
                                                 }}>
                                                 {ele.name}
