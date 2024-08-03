@@ -5,8 +5,6 @@ interface QueryDBParams {
 }
 
 export async function queryDB({ query, type, params }: QueryDBParams) {
-    console.log(query, type, params);
-
     const response = await fetch("/api/query", {
         method: "POST",
         headers: {

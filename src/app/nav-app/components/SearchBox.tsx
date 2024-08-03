@@ -65,9 +65,7 @@ export function SearchBox({
                                                 value={ele.name}
                                                 onSelect={(currentValue) => {
                                                     setValue(
-                                                        currentValue === value
-                                                            ? ""
-                                                            : currentValue
+                                                        currentValue 
                                                     );
                                                     setOpen(false);
                                                 }}>
