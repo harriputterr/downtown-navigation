@@ -15,6 +15,7 @@ import { randomBytes } from "crypto";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { MdImage, MdInfoOutline, MdVideoFile } from "react-icons/md";
+import imageCompression from "browser-image-compression";
 
 export function getImageData(file: File) {
     // FileList is immutable, so we need to create a new one
@@ -122,12 +123,16 @@ const FileUpload = ({
                 description: "Uploading to S3",
             });
 
+            const compressedFile = await imageCompression(file, {
+                maxSizeMB: 0.5,
+            });
+
             const command = new PutObjectCommand({
-                ContentLength: file.size,
-                ContentType: file.type,
+                ContentLength: compressedFile.size,
+                ContentType: compressedFile.type,
                 Key: finalObjectKey,
                 Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME,
-                Body: file,
+                Body: compressedFile,
             });
 
             await s3Client.send(command);
