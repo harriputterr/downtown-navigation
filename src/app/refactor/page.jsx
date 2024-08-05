@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
-export default function page() {
+export default function Page() {
     const [tb, setTb] = useState(null);
     const [map, setMap] = useState(null);
     const [modelSettings, setModelSettings] = useState([]);

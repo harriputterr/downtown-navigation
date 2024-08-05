@@ -14,7 +14,7 @@ import {
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-export default function page() {
+export default function Page() {
   const mapboxRef = useRef(null);
   const [nodes, setNodes] = useState([]);
   const [from, setFrom] = useState(null);

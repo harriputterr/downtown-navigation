@@ -125,7 +125,7 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
                 <SheetHeader>
                     <SheetTitle>Edit Node</SheetTitle>
                     <SheetDescription>
-                        Make changes to your Node here. Click save when you're
+                        Make changes to your Node here. Click save when you are
                         done.
                     </SheetDescription>
                 </SheetHeader>
