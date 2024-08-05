@@ -46,82 +46,7 @@ export default function ImageDisplay({ from, to }) {
 
       rendererRef.current.render(sceneRef.current, cameraRef.current);
 
-      updateArrows();
     });
-  };
-
-  // Function to create a 3D arrow object
-  const createArrow = (direction, color = 0xff0000) => {
-    const arrowLength = 1.5;
-    const arrowColor = color; // Red default color for the arrows if no color is provided
-    const arrowHelper = new THREE.ArrowHelper(
-      direction.clone().normalize(),
-      new THREE.Vector3(0, 0, 0),
-      arrowLength,
-      arrowColor
-    );
-    return arrowHelper;
-  };
-
-  // Function to update the positions and directions of the arrows
-  const updateArrows = () => {
-    if (imagesRef.current) {
-      // Create forward arrow if it doesn't exist
-      if (
-        imagesRef.current[currentImageIndex] &&
-        !forwardArrowRef.current &&
-        sceneRef.current
-      ) {
-        forwardArrowRef.current = createArrow(
-          imagesRef.current[currentImageIndex].forwardArrowDirection ||
-            new THREE.Vector3(0, 0, 1),
-          0x000000
-        ); // Forward direction
-        sceneRef.current.add(forwardArrowRef.current);
-      }
-
-      // Create backward arrow if it doesn't exist and images data is available
-      if (
-        imagesRef.current[currentImageIndex] &&
-        !backwardArrowRef.current &&
-        sceneRef.current
-      ) {
-        backwardArrowRef.current = createArrow(
-          imagesRef.current[currentImageIndex].backwardArrowDirection ||
-            new THREE.Vector3(0, 0, -1),
-          0xff0000
-        ); // Backward direction
-        sceneRef.current.add(backwardArrowRef.current);
-      }
-
-      if (
-        forwardArrowRef.current &&
-        backwardArrowRef.current &&
-        cameraRef.current
-      ) {
-        // Position arrows at the camera's position
-        forwardArrowRef.current.position.copy({
-          x: 2.8420269164658727,
-          y: -0.29651549651092096,
-          z: -0.18321234986362908,
-        });
-        backwardArrowRef.current.position.copy(cameraRef.current.position);
-        backwardArrowRef.current.position.set(0, 0, 0);
-        forwardArrowRef.current.position.set(0, 0, 0);
-
-        // Orient arrows relative to the camera's direction
-        forwardArrowRef.current.setDirection(
-          new THREE.Vector3(0, 0, -1).applyQuaternion(
-            cameraRef.current.quaternion
-          )
-        );
-        backwardArrowRef.current.setDirection(
-          new THREE.Vector3(0, 0, 1).applyQuaternion(
-            cameraRef.current.quaternion
-          )
-        );
-      }
-    }
   };
 
   const handleNextImage = () => {
@@ -214,7 +139,6 @@ export default function ImageDisplay({ from, to }) {
         requestAnimationFrame(animate);
         controls.update();
         renderer.render(scene, camera);
-        updateArrows();
       };
 
       animate();
