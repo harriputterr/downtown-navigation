@@ -19,7 +19,10 @@ export const getRelationships = async () => {
   }
 };
 
-export const recreateLines = (map, tb, relationships) => {
+export const recreateLines = async (map, tb) => {
+
+  const relationships = await getRelationships();
+  
   relationships.data.forEach(rel => {
     const nodeA = rel.a.properties;
     const nodeB = rel.b.properties;

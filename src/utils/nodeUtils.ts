@@ -8,6 +8,7 @@ interface Node {
         y: number;
         z: number;
     };
+    image: string;
 }
 
 interface ResultProps {

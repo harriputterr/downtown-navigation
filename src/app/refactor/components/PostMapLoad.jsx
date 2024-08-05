@@ -28,8 +28,8 @@ export const loadCustomLayerAndEventListeners = (
 
     // Fetch and add all of the data nodes from neo4j DB
     await loadDbData(tb, setNodeStateObj, map);
-    const relationships = await getRelationships();
-    recreateLines(map, tb, relationships);
+    
+    recreateLines(map, tb);
    
 
     map.on("click", (event) => {

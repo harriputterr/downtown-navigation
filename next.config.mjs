@@ -8,7 +8,7 @@ const nextConfig = {
             },
             
             {
-                hostname: "harsingh-validator-bucket.s3.ca-central-1.amazonaws.com",
+                hostname: "all360imagesbucket.s3.ca-central-1.amazonaws.com",
             },
         ],
     },

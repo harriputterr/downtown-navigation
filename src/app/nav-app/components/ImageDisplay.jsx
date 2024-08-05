@@ -5,148 +5,246 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default function ImageDisplay({ from, to }) {
-    const sceneRef = useRef();
-    const rendererRef = useRef();
-    const cameraRef = useRef();
+  // Refs to store the scene, renderer, and camera instances
+  const sceneRef = useRef();
+  const rendererRef = useRef();
+  const cameraRef = useRef();
+  const imagesRef = useRef([]);
 
-    const [images, setImages] = useState([]);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // State to manage the currently displayed image index
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    let sphere = null;
+  let sphere = null;
+  const forwardArrowRef = useRef(null);
+  const backwardArrowRef = useRef(null);
 
-    const loadAndRenderImage = (index) => {
-        const loader = new THREE.TextureLoader();
-        console.log(images[index]);
-        loader.load(images[index], function (texture) {
-            if (sphere) {
-                sceneRef.current.remove(sphere);
-            }
+  const loadAndRenderImage = (index) => {
+    if (!imagesRef.current[index]) {
+      console.error("Image URL not found for index:", index);
+      return;
+    }
 
-            const material = new THREE.MeshBasicMaterial({
-                map: texture,
-            });
+    if (sphere) {
+      sceneRef.current.remove(sphere); // Remove the existing sphere if any
+    }
 
-            const geometry = new THREE.SphereGeometry(3, 32, 32);
-            geometry.scale(-1, 1, 1);
-            sphere = new THREE.Mesh(geometry, material);
-            sphere.position.set(0, 0, 0);
-            sceneRef.current.add(sphere);
+    const loader = new THREE.TextureLoader();
+    loader.load(imagesRef.current[index].imageURL, function (texture) {
+      if (sphere) {
+        sceneRef.current.remove(sphere);
+      }
 
-            rendererRef.current.render(sceneRef.current, cameraRef.current);
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+      });
+
+      const geometry = new THREE.SphereGeometry(3, 32, 32);
+      geometry.scale(-1, 1, 1);
+      sphere = new THREE.Mesh(geometry, material);
+      sphere.position.set(0, 0, 0);
+      sceneRef.current.add(sphere);
+
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+
+      updateArrows();
+    });
+  };
+
+  // Function to create a 3D arrow object
+  const createArrow = (direction, color = 0xff0000) => {
+    const arrowLength = 1.5;
+    const arrowColor = color; // Red default color for the arrows if no color is provided
+    const arrowHelper = new THREE.ArrowHelper(
+      direction.clone().normalize(),
+      new THREE.Vector3(0, 0, 0),
+      arrowLength,
+      arrowColor
+    );
+    return arrowHelper;
+  };
+
+  // Function to update the positions and directions of the arrows
+  const updateArrows = () => {
+    if (imagesRef.current) {
+      // Create forward arrow if it doesn't exist
+      if (
+        imagesRef.current[currentImageIndex] &&
+        !forwardArrowRef.current &&
+        sceneRef.current
+      ) {
+        forwardArrowRef.current = createArrow(
+          imagesRef.current[currentImageIndex].forwardArrowDirection ||
+            new THREE.Vector3(0, 0, 1),
+          0x000000
+        ); // Forward direction
+        sceneRef.current.add(forwardArrowRef.current);
+      }
+
+      // Create backward arrow if it doesn't exist and images data is available
+      if (
+        imagesRef.current[currentImageIndex] &&
+        !backwardArrowRef.current &&
+        sceneRef.current
+      ) {
+        backwardArrowRef.current = createArrow(
+          imagesRef.current[currentImageIndex].backwardArrowDirection ||
+            new THREE.Vector3(0, 0, -1),
+          0xff0000
+        ); // Backward direction
+        sceneRef.current.add(backwardArrowRef.current);
+      }
+
+      if (
+        forwardArrowRef.current &&
+        backwardArrowRef.current &&
+        cameraRef.current
+      ) {
+        // Position arrows at the camera's position
+        forwardArrowRef.current.position.copy({
+          x: 2.8420269164658727,
+          y: -0.29651549651092096,
+          z: -0.18321234986362908,
         });
-    };
+        backwardArrowRef.current.position.copy(cameraRef.current.position);
+        backwardArrowRef.current.position.set(0, 0, 0);
+        forwardArrowRef.current.position.set(0, 0, 0);
 
-    const handleNextImage = () => {
-        setCurrentImageIndex((prev) => {
-            if (prev < images.length - 1) {
-                return prev + 1;
-            }
-            return prev;
-        });
-    };
+        // Orient arrows relative to the camera's direction
+        forwardArrowRef.current.setDirection(
+          new THREE.Vector3(0, 0, -1).applyQuaternion(
+            cameraRef.current.quaternion
+          )
+        );
+        backwardArrowRef.current.setDirection(
+          new THREE.Vector3(0, 0, 1).applyQuaternion(
+            cameraRef.current.quaternion
+          )
+        );
+      }
+    }
+  };
 
-    const handlePrevImage = () => {
-        setCurrentImageIndex((prev) => {
-            if (prev > 0) {
-                return prev - 1;
-            }
-            return prev;
-        });
-    };
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) => {
+      if (prev < imagesRef.current.length - 1) {
+        return prev + 1;
+      }
+      return prev;
+    });
+  };
 
-    async function getShortestPathImageUrls() {
-        const query = `
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) => {
+      if (prev > 0) {
+        return prev - 1;
+      }
+      return prev;
+    });
+  };
+
+  async function getShortestPathImageUrls() {
+    const query = `
       MATCH (startNode:Node {name: $start}), (endNode:Node {name: $stop})
       MATCH path = shortestPath((startNode)-[*]-(endNode))
       RETURN nodes(path) AS pathNodes;
     `;
 
-        const result = await queryDB({
-            query,
-            type: "read",
-            params: { start: from, stop: to },
-        });
+    const result = await queryDB({
+      query,
+      type: "read",
+      params: { start: from, stop: to },
+    });
 
-        if (result.data.length === 0) {
-            console.log("No data found");
-            return;
-        }
-
-        const nodesArray = result.data[0].pathNodes;
-
-        const imagesURL = nodesArray.map((node) => {
-            return node.properties.image;
-        });
-
-        setImages(imagesURL);
+    if (result.data.length === 0) {
+      console.log("No data found");
+      return;
     }
 
-    useEffect(() => {
-        getShortestPathImageUrls();
+    const nodesArray = result.data[0].pathNodes;
 
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+    const imagesURL = nodesArray.map((node) => {
+      return node.properties.image;
+    });
 
-        const container = document.getElementById("webglviewer");
+    const imagesObj = imagesURL.map((imageURL) => {
+      return {
+        imageURL,
+        initialView: { lon: 0, lat: 0 },
+        forwardArrowDirection: new THREE.Vector3(1, 0, 0),
+        backwardArrowDirection: new THREE.Vector3(-1, 0, 0),
+      };
+    });
 
-        if (container) {
-            container.appendChild(renderer.domElement);
+    imagesRef.current = imagesObj;
+    loadAndRenderImage(0); // Load the first image after data is fetched
+  }
 
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(
-                75,
-                window.innerWidth / window.innerHeight,
-                1,
-                1000
-            );
+  useEffect(() => {
+    getShortestPathImageUrls();
 
-            // Move the camera back so we can orbit around the sphere
-            camera.position.set(0, 0, 2);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-            const controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableZoom = true; // Enable zoom
-            controls.enablePan = true; // Enable panning
-            controls.enableDamping = true; // Enable damping (inertia)
-            controls.dampingFactor = 0.05; //Set the damping factor (0.05-0.2 is a good range)
-            controls.minDistance = 0.1; // Set minimum zoom distance
-            controls.maxDistance = 3;
+    const container = document.getElementById("webglviewer");
 
-            const animate = () => {
-                requestAnimationFrame(animate);
-                controls.update();
-                // stats.update();
-                renderer.render(scene, camera);
-            };
+    if (container) {
+      container.appendChild(renderer.domElement);
 
-            animate();
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        1,
+        1000
+      );
 
-            sceneRef.current = scene;
-            rendererRef.current = renderer;
-            cameraRef.current = camera;
-        }
-    }, []);
+      // Move the camera back so we can orbit around the sphere
+      camera.position.set(0, 0, 2);
 
-    useEffect(() => {
-        console.log("image index change");
-        loadAndRenderImage(currentImageIndex);
-        console.log("image rendered:", currentImageIndex);
-    }, [currentImageIndex, images.length]);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableZoom = true; // Enable zoom
+      controls.enablePan = true; // Enable panning
+      controls.enableDamping = true; // Enable damping (inertia)
+      controls.dampingFactor = 0.05; // Set the damping factor (0.05-0.2 is a good range)
+      controls.minDistance = 0.1; // Set minimum zoom distance
+      controls.maxDistance = 3;
 
-    return (
-        <div id="webglviewer" className="w-96 h-96">
-            <button
-                onClick={handlePrevImage}
-                id="leftArrow"
-                className="arrow hover:bg-gray-700 hover:text-white">
-                ←
-            </button>
-            <button
-                onClick={handleNextImage}
-                id="rightArrow"
-                className="arrow hover:bg-gray-700 hover:text-white ">
-                →
-            </button>
-        </div>
-    );
+      const animate = () => {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+        updateArrows();
+      };
+
+      animate();
+
+      sceneRef.current = scene;
+      rendererRef.current = renderer;
+      cameraRef.current = camera;
+    }
+  }, []);
+
+  useEffect(() => {
+    loadAndRenderImage(currentImageIndex);
+  }, [currentImageIndex]);
+
+  return (
+    <div id="webglviewer" className="w-full h-full">
+      <button
+        onClick={handlePrevImage}
+        id="leftArrow"
+        className="arrow hover:bg-gray-700 hover:text-white"
+      >
+        ←
+      </button>
+      <button
+        onClick={handleNextImage}
+        id="rightArrow"
+        className="arrow hover:bg-gray-700 hover:text-white "
+      >
+        →
+      </button>
+    </div>
+  );
 }
