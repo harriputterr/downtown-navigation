@@ -24,6 +24,7 @@
         "@react-three/fiber": "^8.16.6",
         "@types/mapbox-gl": "^3.1.0",
         "aws-sdk": "^2.1645.0",
+        "browser-image-compression": "^2.0.2",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "cmdk": "0.2.0",
