@@ -21,6 +21,7 @@ export default function Page() {
     const [to, setTo] = useState(null);
     const mapRef = useRef(null);
 
+
     useEffect(() => {
         if (from && to && nodes && mapRef.current) {
             console.log(nodes);
@@ -78,10 +79,11 @@ export default function Page() {
     }, []); // Empty dependency array ensures this effect runs only once
 
     return (
+
         <>
             <ResizablePanelGroup
                 direction="vertical"
-                className="min-h-screen w-screen rounded-lg border">
+                className="w-screen rounded-lg border min-h-100vh min-h-[100svh]">
                 <ResizablePanel defaultSize={50}>
                     <div className="flex h-full items-center justify-center">
                         <div
@@ -106,7 +108,7 @@ export default function Page() {
                     </div>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={50}>
+                <ResizablePanel defaultSize={50} className="relative">
                     <div className="flex h-full items-center justify-center">
                         {from && to ? (
                             <ImageDisplay from={from} to={to} />
