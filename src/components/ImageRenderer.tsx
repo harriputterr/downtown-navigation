@@ -1,20 +1,31 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Button } from "./ui/button";
 
+interface InitView {
+    initX: number;
+    initY: number;
+    initZ: number;
+}
+
 const ImageRenderer = ({
     isInitViewEdittable = false,
     image,
+    onSaveView,
+    initView
 }: {
     isInitViewEdittable: boolean;
     image: string;
+    onSaveView: (initView: InitView) => void;
+    initView: InitView | undefined
 }) => {
     const geometryRef = useRef<THREE.SphereGeometry | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const cameraRef = useRef<THREE.Camera | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+    const controlsRef = useRef<OrbitControls | null>(null);
 
     useEffect(() => {
         const renderer = new THREE.WebGLRenderer();
@@ -38,6 +49,15 @@ const ImageRenderer = ({
             // Move the camera back so we can orbit around the sphere
             camera.position.set(0, 0, 2);
             const controls = new OrbitControls(camera, renderer.domElement);
+            if (initView) {
+                console.log("This is the initView", initView)
+                const initViewVector = new THREE.Vector3(initView.initX, initView.initY, initView.initZ)
+                camera.lookAt(initViewVector)
+                controls.target.copy(initViewVector)
+                controls.update();
+            }
+            controlsRef.current = controls;
+
             controls.enableZoom = true; // Enable zoom
             controls.enablePan = true; // Enable panning
             controls.enableDamping = true; // Enable damping (inertia)
@@ -83,10 +103,28 @@ const ImageRenderer = ({
         });
     }, [image]);
 
+    function handleSaveInitView() {
+        if (cameraRef.current && controlsRef.current) {
+            const cameraDirection = new THREE.Vector3();
+            cameraRef.current.getWorldDirection(cameraDirection);
+
+            console.log(cameraDirection);
+
+            const { x, y, z } = cameraDirection;
+            const initView = {
+                initX: x,
+                initY: y,
+                initZ: z
+            }
+
+            onSaveView(initView)
+        }
+    }
+
     return (
         <div id="webglviewer" className="w-full h-full relative">
             {isInitViewEdittable && (
-                <Button className="absolute top-2 left-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+                <Button onClick={handleSaveInitView} className="absolute top-2 left-2 bg-blue-500 text-white px-4 py-2 rounded-md">
                     Save Initial View
                 </Button>
             )}

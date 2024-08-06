@@ -17,7 +17,12 @@ import { queryDB } from "./QueryDB";
 import { deleteDataNode } from "./DataNodeCRUD";
 import { findObjectInWorldViaUUID } from "./FindObjectInWorld";
 import FileUpload from "./FileUpload";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import ImageRenderer from "@/components/ImageRenderer";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -121,42 +126,23 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
         map.repaint = true;
     }
 
-    function handleSaveInitialView() {
-        if (cameraRef.current && controlsRef.current) {
-            const cameraDirection = new THREE.Vector3();
-            cameraRef.current.getWorldDirection(cameraDirection);
-            console.log(cameraDirection);
+    async function handleInitSaveView(initView) {
+        const query = `
+    MATCH (n: Node {uuid: $uuid})
+    SET n.initX = $initX,
+    n.initY = $initY,
+    n.initZ = $initZ
+    RETURN n;
+    `;
+        const { initX, initY, initZ } = initView;
+        const uuid = selectedNode.uuid;
+        const params = { uuid, initX, initY, initZ };
 
-            //     const lookAt = new THREE.Vector3(
-            //       -0.9685079767749152,
-            //       0.05840541811344151,
-            //       -0.2420353405152943
-            //     );
-
-            //     console.log("This is the lookat",lookAt)
-            //   //   {
-            //   //     "x": -0.9685079767749152,
-            //   //     "y": 0.05840541811344151,
-            //   //     "z": -0.2420353405152943
-            //   // }
-
-            //     console.log(cameraDirection)
-
-            //     cameraRef.current.lookAt(lookAt)
-
-            //     controlsRef.current.target.copy(lookAt);
-            //     controlsRef.current.update();
-
-            // console.log(cameraRef.current)
-            toast({
-                title: "Camera Direction",
-                description: JSON.stringify(cameraDirection),
-            });
-        }
-    }
-
-    function handleViewSave({ camera, controls }) {
-        console.log(camera, controls);
+        const result = await queryDB({
+            query: query,
+            type: "write",
+            params: params,
+        });
     }
 
     return (
@@ -262,7 +248,13 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
                                     image={
                                         uploadedFileUrl || selectedNode.image
                                     }
-                                    isInitViewEdittable={true}></ImageRenderer>
+                                    isInitViewEdittable={true}
+                                    onSaveView={handleInitSaveView}
+                                    initView={{
+                                        initX: selectedNode.initX,
+                                        initY: selectedNode.initY,
+                                        initZ: selectedNode.initZ,
+                                    }}></ImageRenderer>
                             </DialogContent>
                         </Dialog>
                     )}
