@@ -2,9 +2,15 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import {Button} from '@/components/ui/button';
+import { Button } from "./ui/button";
 
- const ImageRenderer = ({ children, image }: {children: React.ReactNode | undefined , image: string }) => {
+const ImageRenderer = ({
+    isInitViewEdittable = false,
+    image,
+}: {
+    isInitViewEdittable: boolean;
+    image: string;
+}) => {
     const geometryRef = useRef<THREE.SphereGeometry | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const cameraRef = useRef<THREE.Camera | null>(null);
@@ -77,9 +83,15 @@ import {Button} from '@/components/ui/button';
         });
     }, [image]);
 
-    return <div id="webglviewer" className="w-full h-full relative">
-        {children}
-    </div>;
+    return (
+        <div id="webglviewer" className="w-full h-full relative">
+            {isInitViewEdittable && (
+                <Button className="absolute top-2 left-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+                    Save Initial View
+                </Button>
+            )}
+        </div>
+    );
 };
 
 export default ImageRenderer;
