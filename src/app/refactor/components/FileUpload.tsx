@@ -65,6 +65,7 @@ const FileUpload = ({
     fileSource = null,
     saveFileInDbAction,
     objectKey = undefined,
+    onFileUpload,
 }: {
     id: string;
     width: number;
@@ -73,7 +74,7 @@ const FileUpload = ({
     aspectRatio?: number;
     fileSource?: string | null;
     objectKey?: string;
-
+    onFileUpload: ({ url }: { url: string }) => void;
     saveFileInDbAction: (
         url: string
     ) => Promise<{ success: boolean; message: string }>;
@@ -141,6 +142,7 @@ const FileUpload = ({
                 description: "Successfully uploaded to S3",
             });
 
+            onFileUpload({ url: newFileUrl });
             setPreview(newFileUrl);
             setFile(null);
         } catch (err) {

@@ -17,7 +17,8 @@ import { queryDB } from "./QueryDB";
 import { deleteDataNode } from "./DataNodeCRUD";
 import { findObjectInWorldViaUUID } from "./FindObjectInWorld";
 import FileUpload from "./FileUpload";
-import { recreateLines } from "./CreateRelations";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ImageRenderer from "@/components/ImageRenderer";
 
 export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
     const selectedNode = nodeStateObj.selectedNode;
@@ -26,6 +27,7 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
     const [y, setY] = useState(0);
     const [z, setZ] = useState(0);
     const [name, setName] = useState("");
+    const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
 
     useEffect(() => {
         if (selectedNode) {
@@ -109,8 +111,6 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
         // Removes the data node from the map.Specifically through the world array.
         const sphere = findObjectInWorldViaUUID(deleteNodeUUID, tb);
         tb.remove(sphere);
-
-       
 
         tb.update();
         map.repaint = true;
@@ -198,9 +198,31 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
                         label="Image"
                         width={300}
                         objectKey={selectedNode.uuid}
-                        fileSource={selectedNode.image || null}
+                        fileSource={
+                            selectedNode.image || uploadedFileUrl || null
+                        }
                         saveFileInDbAction={handleFileUpload}
+                        onFileUpload={({ url }) => {
+                            setUploadedFileUrl(url);
+                        }}
                     />
+
+                    {(selectedNode.image || uploadedFileUrl) && (
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant={"secondary"}>
+                                    Set Initial view for image
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="p-0 overflow-hidden inset-0 translate-x-0 translate-y-0 max-w-[100vw]">
+                                <ImageRenderer
+                                    image={
+                                        uploadedFileUrl || selectedNode.image
+                                    }
+                                />
+                            </DialogContent>
+                        </Dialog>
+                    )}
                 </div>
                 <SheetFooter>
                     <SheetClose asChild>
