@@ -2,8 +2,9 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import {Button} from '@/components/ui/button';
 
-const ImageRenderer = ({ image }: { image: string }) => {
+ const ImageRenderer = ({ children, image }: {children: React.ReactNode | undefined , image: string }) => {
     const geometryRef = useRef<THREE.SphereGeometry | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const cameraRef = useRef<THREE.Camera | null>(null);
@@ -76,7 +77,9 @@ const ImageRenderer = ({ image }: { image: string }) => {
         });
     }, [image]);
 
-    return <div id="webglviewer" className="w-full h-full"></div>;
+    return <div id="webglviewer" className="w-full h-full relative">
+        {children}
+    </div>;
 };
 
 export default ImageRenderer;
