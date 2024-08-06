@@ -92,7 +92,7 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
     RETURN n;
     `;
         const uuid = selectedNode.uuid;
-        const params = { uuid, x, y, z, name };
+        const params = { uuid, x, y, z, name: name.toLowerCase() };
 
         const result = await queryDB({
             query: query,

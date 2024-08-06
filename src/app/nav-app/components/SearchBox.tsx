@@ -32,6 +32,8 @@ export function SearchBox({
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState("");
 
+    console.log("elements", elements);
+
     React.useEffect(() => {
         onSelectChange(value);
     }, [value]);
@@ -64,9 +66,7 @@ export function SearchBox({
                                                 key={ele.uuid}
                                                 value={ele.name}
                                                 onSelect={(currentValue) => {
-                                                    setValue(
-                                                        currentValue 
-                                                    );
+                                                    setValue(currentValue);
                                                     setOpen(false);
                                                 }}>
                                                 {ele.name}
