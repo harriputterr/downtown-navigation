@@ -31,8 +31,6 @@ export default function Page() {
         selectedNode: null,
     });
 
-    console.log(nodeStateObj);
-
     return (
         <>
             <div>

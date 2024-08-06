@@ -21,6 +21,7 @@ const ImageRenderer = ({
     onSaveView: (initView: InitView) => void;
     initView: InitView | undefined
 }) => {
+    console.log(initView)
     const geometryRef = useRef<THREE.SphereGeometry | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const cameraRef = useRef<THREE.Camera | null>(null);
@@ -47,23 +48,38 @@ const ImageRenderer = ({
                 1000
             );
             // Move the camera back so we can orbit around the sphere
-            camera.position.set(0, 0, 2);
+            camera.position.set(0, 0, 0);
             const controls = new OrbitControls(camera, renderer.domElement);
-            if (initView) {
-                console.log("This is the initView", initView)
-                const initViewVector = new THREE.Vector3(initView.initX, initView.initY, initView.initZ)
-                camera.lookAt(initViewVector)
-                controls.target.copy(initViewVector)
-                controls.update();
-            }
-            controlsRef.current = controls;
-
             controls.enableZoom = true; // Enable zoom
             controls.enablePan = true; // Enable panning
             controls.enableDamping = true; // Enable damping (inertia)
             controls.dampingFactor = 0.05; //Set the damping factor (0.05-0.2 is a good range)
             controls.minDistance = 0.1; // Set minimum zoom distance
             controls.maxDistance = 3;
+            if (initView) {
+                console.log("This is the initView", initView)
+                const desiredRotation = new THREE.Euler(
+                    initView.initX, // x rotation in radians
+                    initView.initY, // y rotation in radians
+                    initView.initZ, // z rotation in radians
+                    "XYZ"
+                );
+
+                const direction = new THREE.Vector3(0, 0, -1); // Default forward direction
+                direction.applyEuler(desiredRotation);
+
+                // Calculate the target position
+                const targetPosition = new THREE.Vector3();
+                targetPosition.copy(camera.position).add(direction);
+
+                // Set the controls target
+                controls.target.copy(targetPosition);
+                controls.update();
+
+                console.log(camera.position)
+            }
+            controlsRef.current = controls;
+
 
             const animate = () => {
                 requestAnimationFrame(animate);
@@ -105,12 +121,10 @@ const ImageRenderer = ({
 
     function handleSaveInitView() {
         if (cameraRef.current && controlsRef.current) {
-            const cameraDirection = new THREE.Vector3();
-            cameraRef.current.getWorldDirection(cameraDirection);
+            console.log(cameraRef.current.rotation)
+            const eulerRotation = cameraRef.current.rotation;
 
-            console.log(cameraDirection);
-
-            const { x, y, z } = cameraDirection;
+            const { x, y, z } = eulerRotation;
             const initView = {
                 initX: x,
                 initY: y,
