@@ -20,7 +20,8 @@ export default function Page() {
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
     const mapRef = useRef(null);
-    console.log(to);
+
+
     useEffect(() => {
         if (from && to && nodes && mapRef.current) {
             console.log(nodes);
@@ -42,7 +43,10 @@ export default function Page() {
 
     useEffect(() => {
         getAllNodes().then((res) => {
-            const data = res.data.map((ele) => ele.n.properties);
+            const data = res.data.map((ele) => ({
+                ...ele.n.properties,
+                name: ele.n.properties.name.toLowerCase(),
+            }));
             console.log(data);
             setNodes(data);
         });
@@ -75,30 +79,7 @@ export default function Page() {
     }, []); // Empty dependency array ensures this effect runs only once
 
     return (
-        // <div className="w-96 h-96">
-        // {/* {from && to ? (
-        //   <ImageDisplay from={from} to={to} />
-        // ) : (
 
-        //   )} */}
-        //   <div ref={mapboxRef} className="w-screen h-screen"></div>
-        //   <div className="flex flex-col gap-2 absolute top-5 right-5 min-w-[15rem]">
-        //     <SearchBox
-        //       placeholder="From"
-        //       elements={nodes}
-        //       onSelectChange={(val) => {
-        //         setFrom(val);
-        //       }}
-        //     />
-        //     <SearchBox
-        //       placeholder="To"
-        //       elements={nodes}
-        //       onSelectChange={(val) => {
-        //         setTo(val);
-        //       }}
-        //     />
-        //   </div>
-        // </div>
         <>
             <ResizablePanelGroup
                 direction="vertical"
