@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
+import Threejs from './components/Threejs';
 import mapboxgl from "mapbox-gl";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -132,6 +133,7 @@ export default function Page() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      {/* <Threejs /> */}
     </>
   );
 }

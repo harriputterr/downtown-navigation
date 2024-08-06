@@ -10,6 +10,9 @@ export default function ImageDisplay({ from, to }) {
   const rendererRef = useRef();
   const cameraRef = useRef();
   const imagesRef = useRef([]);
+  const controlsRef = useRef();
+
+  const [initialView, setInitialView] = useState();
 
   // State to manage the currently displayed image index
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -45,7 +48,6 @@ export default function ImageDisplay({ from, to }) {
       sceneRef.current.add(sphere);
 
       rendererRef.current.render(sceneRef.current, cameraRef.current);
-
     });
   };
 
@@ -66,6 +68,52 @@ export default function ImageDisplay({ from, to }) {
       return prev;
     });
   };
+
+  function handleInitialViewButton() {
+    if (cameraRef.current && controlsRef.current) {
+      const lookAt = new THREE.Vector3(
+        -0.9685079767749152,
+        0.05840541811344151,
+        -0.2420353405152943
+      );
+
+      console.log("This is the lookat",lookAt)
+    //   {
+    //     "x": -0.9685079767749152,
+    //     "y": 0.05840541811344151,
+    //     "z": -0.2420353405152943
+    // }
+      const cameraDirection = new THREE.Vector3();
+      cameraRef.current.getWorldDirection(cameraDirection);
+
+      console.log(cameraDirection)
+
+      cameraRef.current.lookAt(lookAt)
+
+      controlsRef.current.target.copy(lookAt);
+      controlsRef.current.update();
+
+      // console.log(cameraRef.current)
+    }
+  }
+  useEffect(() => {
+    if (cameraRef.current && controlsRef.current) {
+
+
+      cameraRef.current.lookAt(
+        new THREE.Vector3(
+          initialView.position.x,
+          initialView.position.y,
+          initialView.position.z
+        )
+      );
+
+
+      console.log(initialView)
+
+
+    }
+  }, [initialView]);
 
   async function getShortestPathImageUrls() {
     const query = `
@@ -124,14 +172,14 @@ export default function ImageDisplay({ from, to }) {
         1000
       );
 
-      // Move the camera back so we can orbit around the sphere
-      camera.position.set(0, 0, 2);
-
       const controls = new OrbitControls(camera, renderer.domElement);
+      controlsRef.current = controls;
+
+
       controls.enableZoom = true; // Enable zoom
       controls.enablePan = true; // Enable panning
-      controls.enableDamping = true; // Enable damping (inertia)
-      controls.dampingFactor = 0.05; // Set the damping factor (0.05-0.2 is a good range)
+      // controls.enableDamping = true; // Enable damping (inertia)
+      // controls.dampingFactor = 0.05; // Set the damping factor (0.05-0.2 is a good range)
       controls.minDistance = 0.1; // Set minimum zoom distance
       controls.maxDistance = 3;
 
@@ -139,6 +187,7 @@ export default function ImageDisplay({ from, to }) {
         requestAnimationFrame(animate);
         controls.update();
         renderer.render(scene, camera);
+        // console.log(camera.position);
       };
 
       animate();
@@ -155,6 +204,9 @@ export default function ImageDisplay({ from, to }) {
 
   return (
     <div id="webglviewer" className="w-full h-full">
+      <button onClick={handleInitialViewButton}>
+        Click me to set the initial view
+      </button>
       <button
         onClick={handlePrevImage}
         id="leftArrow"
