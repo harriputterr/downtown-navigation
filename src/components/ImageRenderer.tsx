@@ -14,14 +14,14 @@ const ImageRenderer = ({
     isInitViewEdittable = false,
     image,
     onSaveView,
-    initView
+    initView,
 }: {
     isInitViewEdittable: boolean;
     image: string;
     onSaveView: (initView: InitView) => void;
-    initView: InitView | undefined
+    initView: InitView | undefined;
 }) => {
-    console.log(initView)
+    console.log(initView);
     const geometryRef = useRef<THREE.SphereGeometry | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const cameraRef = useRef<THREE.Camera | null>(null);
@@ -56,30 +56,7 @@ const ImageRenderer = ({
             controls.dampingFactor = 0.05; //Set the damping factor (0.05-0.2 is a good range)
             controls.minDistance = 0.1; // Set minimum zoom distance
             controls.maxDistance = 3;
-            if (initView) {
-                console.log("This is the initView", initView)
-                const desiredRotation = new THREE.Euler(
-                    initView.initX, // x rotation in radians
-                    initView.initY, // y rotation in radians
-                    initView.initZ, // z rotation in radians
-                    "XYZ"
-                );
-
-                const direction = new THREE.Vector3(0, 0, -1); // Default forward direction
-                direction.applyEuler(desiredRotation);
-
-                // Calculate the target position
-                const targetPosition = new THREE.Vector3();
-                targetPosition.copy(camera.position).add(direction);
-
-                // Set the controls target
-                controls.target.copy(targetPosition);
-                controls.update();
-
-                console.log(camera.position)
-            }
             controlsRef.current = controls;
-
 
             const animate = () => {
                 requestAnimationFrame(animate);
@@ -99,6 +76,30 @@ const ImageRenderer = ({
             cameraRef.current = camera;
         }
     }, []);
+
+    useEffect(() => {
+        if (initView) {
+            const desiredRotation = new THREE.Euler(
+                initView.initX, // x rotation in radians
+                initView.initY, // y rotation in radians
+                initView.initZ, // z rotation in radians
+                "XYZ"
+            );
+
+            const direction = new THREE.Vector3(0, 0, -1); // Default forward direction
+            direction.applyEuler(desiredRotation);
+
+            // Calculate the target position
+            const targetPosition = new THREE.Vector3();
+            if (cameraRef.current && controlsRef.current) {
+                targetPosition.copy(cameraRef.current.position).add(direction);
+
+                // Set the controls target
+                controlsRef.current.target.copy(targetPosition);
+                controlsRef.current.update();
+            }
+        }
+    }, [initView?.initX, initView?.initY, initView?.initZ]);
 
     useEffect(() => {
         const loader = new THREE.TextureLoader();
@@ -121,24 +122,26 @@ const ImageRenderer = ({
 
     function handleSaveInitView() {
         if (cameraRef.current && controlsRef.current) {
-            console.log(cameraRef.current.rotation)
+            console.log(cameraRef.current.rotation);
             const eulerRotation = cameraRef.current.rotation;
 
             const { x, y, z } = eulerRotation;
             const initView = {
                 initX: x,
                 initY: y,
-                initZ: z
-            }
+                initZ: z,
+            };
 
-            onSaveView(initView)
+            onSaveView(initView);
         }
     }
 
     return (
         <div id="webglviewer" className="w-full h-full relative">
             {isInitViewEdittable && (
-                <Button onClick={handleSaveInitView} className="absolute top-2 left-2 bg-blue-500 text-white px-4 py-2 rounded-md">
+                <Button
+                    onClick={handleSaveInitView}
+                    className="absolute top-2 left-2 bg-blue-500 text-white px-4 py-2 rounded-md">
                     Save Initial View
                 </Button>
             )}
