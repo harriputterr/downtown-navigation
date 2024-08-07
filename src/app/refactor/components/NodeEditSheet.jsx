@@ -128,22 +128,32 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
   }
 
   async function handleInitSaveView(initView) {
-    const query = `
-    MATCH (n: Node {uuid: $uuid})
-    SET n.initX = $initX,
-    n.initY = $initY,
-    n.initZ = $initZ
-    RETURN n;
-    `;
-    const { initX, initY, initZ } = initView;
-    const uuid = selectedNode.uuid;
-    const params = { uuid, initX, initY, initZ };
+    try {
+      const query = `
+      MATCH (n: Node {uuid: $uuid})
+      SET n.initX = $initX,
+      n.initY = $initY,
+      n.initZ = $initZ
+      RETURN n;
+      `;
+      const { initX, initY, initZ } = initView;
+      const uuid = selectedNode.uuid;
+      const params = { uuid, initX, initY, initZ };
 
-    const result = await queryDB({
-      query: query,
-      type: "write",
-      params: params,
-    });
+      const result = await queryDB({
+        query: query,
+        type: "write",
+        params: params,
+      });
+      toast({
+        description: "Initial View set successfully!",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Error while setting the initial view",
+      });
+    }
   }
 
   return (
@@ -155,7 +165,8 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
         <SheetHeader>
           <SheetTitle>Edit Node</SheetTitle>
           <SheetDescription>
-            Make changes to your Node here. Click save when you are done.
+            Make changes to your Node here. Click save when you are
+            done.
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
@@ -227,7 +238,9 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
             label="Image"
             width={300}
             objectKey={selectedNode.uuid}
-            fileSource={selectedNode.image || uploadedFileUrl || null}
+            fileSource={
+              selectedNode.image || uploadedFileUrl || null
+            }
             saveFileInDbAction={handleFileUpload}
             onFileUpload={({ url }) => {
               setUploadedFileUrl(url);
@@ -247,15 +260,16 @@ export default function NodeEditSheet({ nodeStateObj, className, map, tb }) {
                   <DialogTitle></DialogTitle>
                 </div>
                 <ImageRenderer
-                  image={uploadedFileUrl || selectedNode.image}
+                  image={
+                    uploadedFileUrl || selectedNode.image
+                  }
                   isInitViewEdittable={true}
                   onSaveView={handleInitSaveView}
                   initView={{
                     initX: selectedNode.initX,
                     initY: selectedNode.initY,
                     initZ: selectedNode.initZ,
-                  }}
-                ></ImageRenderer>
+                  }}></ImageRenderer>
               </DialogContent>
             </Dialog>
           )}
