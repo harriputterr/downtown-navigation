@@ -1,5 +1,5 @@
 "use client";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Button } from "./ui/button";
@@ -27,6 +27,7 @@ const ImageRenderer = ({
     const cameraRef = useRef<THREE.Camera | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const controlsRef = useRef<OrbitControls | null>(null);
+    const [animateFlag, setAnimateFlag] = useState(true);
 
     useEffect(() => {
         const renderer = new THREE.WebGLRenderer();
@@ -58,15 +59,6 @@ const ImageRenderer = ({
             controls.maxDistance = 3;
             controlsRef.current = controls;
 
-            const animate = () => {
-                requestAnimationFrame(animate);
-                controls.update();
-                // stats.update();
-                renderer.render(scene, camera);
-            };
-
-            animate();
-
             const geometry = new THREE.SphereGeometry(3, 32, 32);
             geometry.scale(-1, 1, 1);
 
@@ -75,7 +67,38 @@ const ImageRenderer = ({
             rendererRef.current = renderer;
             cameraRef.current = camera;
         }
+
+        return () => {
+            setAnimateFlag(false);
+        };
     }, []);
+
+    useEffect(() => {
+        const animate = () => {
+            if (
+                controlsRef.current &&
+                rendererRef.current &&
+                sceneRef.current &&
+                cameraRef.current
+            ) {
+                if (animateFlag) {
+                    requestAnimationFrame(animate);
+                    controlsRef.current.update();
+                    // stats.update();
+                    rendererRef.current.render(
+                        sceneRef.current,
+                        cameraRef.current
+                    );
+                    console.log("animate");
+                }
+            }
+        };
+        animate();
+
+        return () => {
+            setAnimateFlag(false);
+        };
+    }, [animateFlag]);
 
     useEffect(() => {
         if (initView) {
@@ -117,6 +140,8 @@ const ImageRenderer = ({
                     cameraRef.current
                 );
             }
+
+            setAnimateFlag(false);
         });
     }, [image]);
 
