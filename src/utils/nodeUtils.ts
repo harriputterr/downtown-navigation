@@ -27,3 +27,27 @@ export const getAllNodes = async (): Promise<ResultProps> => {
         throw error;
     }
 };
+
+export const getShortestPathNodes = async ({
+    from,
+    to,
+}: {
+    from: string;
+    to: string;
+}) => {
+    const query = `
+      MATCH (startNode:Node {name: $start}), (endNode:Node {name: $stop})
+      MATCH path = shortestPath((startNode)-[*]-(endNode))
+      RETURN nodes(path) AS pathNodes;
+    `;
+    const result = await queryDB({
+        query,
+        type: "read",
+        params: { start: from, stop: to },
+    });
+
+    if (result.data) {
+        return result.data[0].pathNodes.map((node: any) => node.properties);
+    }
+    return [];
+};

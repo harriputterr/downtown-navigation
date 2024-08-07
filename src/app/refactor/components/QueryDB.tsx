@@ -1,7 +1,7 @@
 interface QueryDBParams {
     query: string;
     type: "read" | "write";
-    params?: string;
+    params?: { [key: string]: any };
 }
 
 export async function queryDB({ query, type, params }: QueryDBParams) {
