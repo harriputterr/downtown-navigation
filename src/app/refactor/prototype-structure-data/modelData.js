@@ -109,7 +109,7 @@ export const plus15Floors = [
         uuid: "",
         name: "suncor-energy-center-plus15-floor",
         structureType: "plus15-floor",
-        origin: [-114.06400075494047, 51.04802945079754, 5],
+        origin: [-114.06400075494047, 51.04802945079754, 8.5],
         url: "https://harsingh-validator-bucket.s3.ca-central-1.amazonaws.com/Map+Architecture/GLTF-Files/suncor-plus15-level.glb",
         rotation: null,
         color: {b:0.3, g:0.8, r: 1}
