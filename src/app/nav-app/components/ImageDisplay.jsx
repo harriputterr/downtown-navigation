@@ -10,11 +10,11 @@ export default function ImageDisplay({
     setSelectedNodeIdx,
 }) {
     // State to manage the currently displayed image index
-    const [images, setImages] = useState([]);
+    const [imagesObj, setImagesObj] = useState([]);
 
     const handleNextImage = () => {
         setSelectedNodeIdx((prev) => {
-            if (prev < images.length - 1) {
+            if (prev < imagesObj.length - 1) {
                 return prev + 1;
             }
             return prev;
@@ -31,36 +31,37 @@ export default function ImageDisplay({
     };
 
     useEffect(() => {
-        const imagesURL = nodes.map((node) => node.image);
-
-        const imagesObj = imagesURL.map((imageURL) => {
-            if (!imageURL) {
-                return {
-                    imageURL:
-                        "https://placehold.co/600x400?text=No+Image+to+display",
-                    initialView: { lon: 0, lat: 0 },
-                };
-            }
-            return {
-                imageURL,
-                initialView: { lon: 0, lat: 0 },
-            };
+        const imagesWithInitView = nodes.map((node) => {
+            const { image, initX, initY, initZ } = node;
+            return { imageURL: image, initView: { initX, initY, initZ } };
         });
 
-        console.log("imagesObj", imagesObj);
+        const imagesObjWithInitViews = imagesWithInitView.map(
+            (imageWithView) => {
+                if (!imageWithView.imageURL) {
+                    return {
+                        imageURL:
+                            "https://placehold.co/600x400?text=No+Image+to+display",
+                        initialView: imageWithView.initView,
+                    };
+                }
+                return imageWithView;
+            }
+        );
 
-        setImages(imagesObj);
+        setImagesObj(imagesObjWithInitViews);
     }, [nodes]);
 
-    if (images.length === 0) {
+    if (imagesObj.length === 0) {
         return "loading....";
     }
 
     return (
         <div>
-            <ImageRenderer image={images[selectedNodeIdx].imageURL} />
-
-            <div className="absolute"></div>
+            <ImageRenderer
+                image={imagesObj[selectedNodeIdx].imageURL}
+                initView={imagesObj[selectedNodeIdx].initView}
+            />
 
             <div className="flex gap-3 absolute bottom-3 right-3 md:hidden">
                 <Button
@@ -69,7 +70,7 @@ export default function ImageDisplay({
                     <IoIosArrowRoundBack className="text-4xl" />
                 </Button>
                 <Button
-                    disabled={selectedNodeIdx === images.length - 1}
+                    disabled={selectedNodeIdx === imagesObj.length - 1}
                     onClick={handleNextImage}>
                     <IoIosArrowRoundForward className="text-4xl" />
                 </Button>
@@ -85,7 +86,7 @@ export default function ImageDisplay({
             </button>
 
             <button
-                disabled={selectedNodeIdx === images.length - 1}
+                disabled={selectedNodeIdx === imagesObj.length - 1}
                 onClick={handleNextImage}
                 className="absolute pr-6 pl-32 inset-y-0 right-0  place-content-center hover:bg-black/10 focus:bg-black/10 group disabled:hidden transition-colors hidden md:grid">
                 <span className="text-7xl text-white opacity-0 -translate-x-6 group-hover:opacity-100 group-hover:translate-x-0  group-focus:translate-x-0 group-focus:opacity-100 transition-all ">
