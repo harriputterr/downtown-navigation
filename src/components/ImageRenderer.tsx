@@ -28,6 +28,7 @@ const ImageRenderer = ({
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const controlsRef = useRef<OrbitControls | null>(null);
     const [animateFlag, setAnimateFlag] = useState(true);
+    const animationReqRef = useRef<number | null>(null);
 
     useEffect(() => {
         const renderer = new THREE.WebGLRenderer();
@@ -66,39 +67,24 @@ const ImageRenderer = ({
             sceneRef.current = scene;
             rendererRef.current = renderer;
             cameraRef.current = camera;
+
+            const animate = () => {
+                animationReqRef.current = requestAnimationFrame(animate);
+                controls.update();
+                // stats.update();
+                renderer.render(scene, camera);
+                console.log("animate");
+            };
+
+            animate();
         }
 
         return () => {
-            setAnimateFlag(false);
-        };
-    }, []);
-
-    useEffect(() => {
-        const animate = () => {
-            if (
-                controlsRef.current &&
-                rendererRef.current &&
-                sceneRef.current &&
-                cameraRef.current
-            ) {
-                if (animateFlag) {
-                    requestAnimationFrame(animate);
-                    controlsRef.current.update();
-                    // stats.update();
-                    rendererRef.current.render(
-                        sceneRef.current,
-                        cameraRef.current
-                    );
-                    console.log("animate");
-                }
+            if (animationReqRef.current) {
+                cancelAnimationFrame(animationReqRef.current);
             }
         };
-        animate();
-
-        return () => {
-            setAnimateFlag(false);
-        };
-    }, [animateFlag]);
+    }, []);
 
     useEffect(() => {
         if (initView) {
@@ -140,8 +126,6 @@ const ImageRenderer = ({
                     cameraRef.current
                 );
             }
-
-            setAnimateFlag(false);
         });
     }, [image]);
 
