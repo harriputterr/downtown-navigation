@@ -3,6 +3,7 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Button } from "./ui/button";
+import Stats from "three/examples/jsm/libs/stats.module.js";
 
 interface InitView {
     initX: number;
@@ -27,7 +28,6 @@ const ImageRenderer = ({
     const cameraRef = useRef<THREE.Camera | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const controlsRef = useRef<OrbitControls | null>(null);
-    const [animateFlag, setAnimateFlag] = useState(true);
     const animationReqRef = useRef<number | null>(null);
 
     useEffect(() => {
@@ -60,6 +60,7 @@ const ImageRenderer = ({
             controls.maxDistance = 3;
             controlsRef.current = controls;
 
+
             const geometry = new THREE.SphereGeometry(3, 32, 32);
             geometry.scale(-1, 1, 1);
 
@@ -71,7 +72,6 @@ const ImageRenderer = ({
             const animate = () => {
                 animationReqRef.current = requestAnimationFrame(animate);
                 controls.update();
-                // stats.update();
                 renderer.render(scene, camera);
                 console.log("animate");
             };
@@ -112,13 +112,14 @@ const ImageRenderer = ({
 
     useEffect(() => {
         const loader = new THREE.TextureLoader();
+        let sphere: THREE.Mesh | undefined
         loader.load(image, function (texture) {
             const material = new THREE.MeshBasicMaterial({
                 map: texture,
             });
 
             if (geometryRef.current && sceneRef.current && cameraRef.current) {
-                const sphere = new THREE.Mesh(geometryRef.current, material);
+                sphere = new THREE.Mesh(geometryRef.current, material);
                 sphere.position.set(0, 0, 0);
                 sceneRef.current?.add(sphere);
                 rendererRef.current?.render(
@@ -127,6 +128,38 @@ const ImageRenderer = ({
                 );
             }
         });
+
+        return () => {
+            if (geometryRef.current) {
+                geometryRef.current.dispose()
+            }
+            if (sphere) {
+                sceneRef.current?.remove(sphere);
+            }
+
+            // Dispose materials
+            sceneRef.current?.traverse((object) => {
+                if (object instanceof THREE.Mesh) {
+                    object.geometry.dispose();
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach((material) => material.dispose());
+                    } else {
+                        object.material.dispose();
+                    }
+                }
+            });
+
+            // Dispose renderer
+            if (rendererRef.current) {
+                rendererRef.current.dispose();
+            }
+
+            // Clear scene
+            if (sceneRef.current) {
+                sceneRef.current.clear();
+            }
+        }
+
     }, [image]);
 
     function handleSaveInitView() {

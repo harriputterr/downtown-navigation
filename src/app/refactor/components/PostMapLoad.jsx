@@ -14,13 +14,13 @@ export const loadCustomLayerAndEventListeners = (
   map.on("style.load", async function () {
     // map.getContainer().appendChild(stats.dom);
 
-    stats.dom.style.cssText = "";
-    stats.dom.style.position = "fixed";
-    stats.dom.style.bottom = "0px";
-    stats.dom.style.left = "0px";
-    stats.dom.style.cursor = "pointer";
-    stats.dom.style.opacity = "0.9";
-    stats.dom.style.zIndex = "10000";
+    // stats.dom.style.cssText = "";
+    // stats.dom.style.position = "fixed";
+    // stats.dom.style.bottom = "0px";
+    // stats.dom.style.left = "0px";
+    // stats.dom.style.cursor = "pointer";
+    // stats.dom.style.opacity = "0.9";
+    // stats.dom.style.zIndex = "10000";
 
     animate();
 
