@@ -10,7 +10,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { data } from "@/app/refactor/prototype-structure-data/modelData";
+import { data } from "@/app/visual-db/prototype-structure-data/modelData";
 
 export default function ModelSelect({ setModelId }) {
     return (

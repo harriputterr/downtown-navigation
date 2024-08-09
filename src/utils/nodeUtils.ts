@@ -1,4 +1,4 @@
-import { queryDB } from "@/app/refactor/components/QueryDB";
+import { queryDB } from "@/app/visual-db/components/QueryDB";
 
 interface Node {
     name: string;
