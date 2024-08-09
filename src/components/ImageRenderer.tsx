@@ -41,6 +41,7 @@ const ImageRenderer = ({
 
         if (container) {
             container.appendChild(renderer.domElement);
+            
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(
@@ -87,6 +88,9 @@ const ImageRenderer = ({
     }, []);
 
     useEffect(() => {
+        if (controlsRef.current){
+            controlsRef.current.reset();
+        }
         if (initView) {
             const desiredRotation = new THREE.Euler(
                 initView.initX, // x rotation in radians
@@ -111,6 +115,7 @@ const ImageRenderer = ({
     }, [initView?.initX, initView?.initY, initView?.initZ]);
 
     useEffect(() => {
+       
         const loader = new THREE.TextureLoader();
         let sphere: THREE.Mesh | undefined
         loader.load(image, function (texture) {
